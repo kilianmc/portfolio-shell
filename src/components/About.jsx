@@ -6,7 +6,7 @@ export default function About() {
       </h2>
       <div className="prose">
         <p>
-          I&rsquo;m a software engineer based in <strong>Barcelona</strong>. I
+          I&rsquo;m a software engineer based in <em>Barcelona</em>. I
           enjoy finding opportunities to solve clients&rsquo; needs by building
           new digital solutions — turning complex requirements into products that
           are reliable, fast, and genuinely pleasant to use.
@@ -17,7 +17,7 @@ export default function About() {
           site is a demonstration of exactly that — a{' '}
           <em>Microfrontend</em> shell that loads each showcase project as
           a separate, independently deployed application at runtime, each exposed
-          as a <em>Module Federation Remote</em> and sharing a single React
+          as a <em>Module</em> and sharing a single React
           runtime.
         </p>
         <p>A few tools and technologies I work with:</p>

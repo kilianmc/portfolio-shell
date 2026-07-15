@@ -19,8 +19,7 @@ export default function Sidebar({ activeSection, onNavigate }) {
         <h1 className="sidebar__name">Kilian Mateo</h1>
         <h2 className="sidebar__role">Software Engineer</h2>
         <p className="sidebar__tagline">
-          I build modular, resilient web experiences — assembling independent
-          frontends into one cohesive product.
+          I like to design, build and implement resilient web experiences.
         </p>
       </div>
 
