@@ -4,7 +4,7 @@ The **host** application for my microfrontend portfolio. It renders the landing
 experience (about, projects, contact) and loads each showcase project as an
 independently deployed **Module Federation remote** at runtime.
 
-- **Live:** _(add Vercel URL after first deploy)_
+- **Live:** https://kilianmc.com
 - **Architecture:** `shell` (this repo) is the host; each project is its own
   repo + Vercel deployment, exposed as a remote and stitched in on demand.
 
