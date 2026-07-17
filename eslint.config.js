@@ -47,8 +47,8 @@ export default [
     },
   },
   {
-    // Node-context files: build config and standalone tooling scripts.
-    files: ['*.config.js', 'scripts/**/*.{js,mjs}'],
+    // Node-context files: build/tool config.
+    files: ['*.config.js'],
     languageOptions: {
       globals: {
         ...globals.node,

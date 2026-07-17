@@ -100,17 +100,24 @@ npm run lint         # ESLint (flat config) over the repo — must pass before P
 npm run lint:fix     # ESLint with autofix
 npm run format       # Prettier --write across the repo
 npm run format:check # Prettier --check (what CI runs) — must pass before PR
+npm test             # Vitest in watch mode
+npm run test:run     # Vitest once (what CI runs) — must pass before PR
 ```
+
+**Testing:** Vitest + React Testing Library (jsdom), config in the `test` block
+of `vite.config.js` with `src/test/setup.js` (jest-dom matchers + a `matchMedia`
+stub). Tests live next to source as `*.test.{js,jsx}`. The Module Federation
+plugin is skipped under Vitest (`process.env.VITEST`) so jsdom can run, and the
+`fundDashboard/App` remote specifier is aliased to a local stub
+(`src/test/remoteAppStub.jsx`); the remote-failure path overrides that with a
+throwing `vi.mock('fundDashboard/App', …)`. Dev/build keep federation active.
 
 To develop against a locally running remote, create `.env` from `.env.example`
 and set `VITE_FUND_REMOTE_URL=http://localhost:5001/remoteEntry.js`.
 
-Lint + format are enforced in CI (`.github/workflows/ci.yml`, job `lint-build`:
-`npm ci` → `npm run lint` → `npm run format:check` → `npm run build`). Run
-`npm run lint` and `npm run format:check` locally before opening a PR.
-
-**No test tooling exists yet** (added by issue #3). Do not reference
-`npm run test` or claim tests until that lands.
+Lint, format, tests, and build are enforced in CI (`.github/workflows/ci.yml`,
+job `lint-build`: `npm ci` → `npm run lint` → `npm run format:check` →
+`npm run test:run` → `npm run build`). Run these locally before opening a PR.
 
 ## Git & PR conventions
 
