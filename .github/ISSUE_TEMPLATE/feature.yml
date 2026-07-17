@@ -1,7 +1,7 @@
 name: Feature / task
 description: Propose a feature or scoped task for the portfolio shell.
-title: "feat: "
-labels: ["enhancement"]
+title: 'feat: '
+labels: ['enhancement']
 body:
   - type: markdown
     attributes:

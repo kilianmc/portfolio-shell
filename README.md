@@ -10,8 +10,8 @@ independently deployed **Module Federation remote** at runtime.
 
 ## Showcase remotes
 
-| Project | Remote | Repo | Live |
-| --- | --- | --- | --- |
+| Project                  | Remote          | Repo                                                         | Live                                     |
+| ------------------------ | --------------- | ------------------------------------------------------------ | ---------------------------------------- |
 | Fund Portfolio Dashboard | `fundDashboard` | [fund-dashboard](https://github.com/kilianmc/fund-dashboard) | https://ai-portfolio-project1.vercel.app |
 
 ## Getting started

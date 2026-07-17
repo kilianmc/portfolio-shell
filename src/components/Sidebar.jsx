@@ -9,7 +9,11 @@ const NAV = [
 
 const SOCIALS = [
   { label: 'GitHub', href: 'https://github.com/kilianmc', Icon: GitHubIcon },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/kilian-mateo-136449157/', Icon: LinkedInIcon },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/kilian-mateo-136449157/',
+    Icon: LinkedInIcon,
+  },
 ];
 
 export default function Sidebar({ activeSection, onNavigate }) {
@@ -51,7 +55,13 @@ export default function Sidebar({ activeSection, onNavigate }) {
       <ul className="sidebar__socials" aria-label="Social links">
         {SOCIALS.map(({ label, href, Icon }) => (
           <li key={label}>
-            <a href={href} target="_blank" rel="noreferrer" aria-label={label} title={label}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={label}
+              title={label}
+            >
               <Icon />
             </a>
           </li>

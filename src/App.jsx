@@ -33,7 +33,7 @@ export default function App() {
           if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
-      { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+      { rootMargin: '-40% 0px -55% 0px', threshold: 0 },
     );
     SECTIONS.forEach((id) => {
       const node = document.getElementById(id);
@@ -91,15 +91,16 @@ export default function App() {
           </section>
 
           <footer className="footer">
-            <p>
-              Built by Kilian Mateo — React, Vite &amp; Deployed on Vercel.
-            </p>
+            <p>Built by Kilian Mateo — React, Vite &amp; Deployed on Vercel.</p>
           </footer>
         </main>
       </div>
 
       {openProject && (
-        <ProjectViewer projectId={openProject} onClose={() => setOpenProject(null)} />
+        <ProjectViewer
+          projectId={openProject}
+          onClose={() => setOpenProject(null)}
+        />
       )}
     </div>
   );
