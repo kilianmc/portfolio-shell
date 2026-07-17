@@ -4,7 +4,7 @@ import { lazy } from 'react';
 // import of the remote's exposed component, wrapped in React.lazy at the
 // component that renders it. `liveUrl`/`repoUrl` point at the standalone
 // deployment and its source.
-export const projects = [
+const realProjects = [
   {
     id: 'fund-dashboard',
     number: '01',
@@ -21,8 +21,52 @@ export const projects = [
   },
 ];
 
+// HTML-only example cards for previewing layout/hover with a fuller grid.
+// NOT shown in production. Enable locally with VITE_SHOW_EXAMPLE_PROJECTS=true
+// (add it to a .env.local file, or run: VITE_SHOW_EXAMPLE_PROJECTS=true npm run dev).
+const exampleProjects = [
+  {
+    id: 'example-chat',
+    number: '02',
+    title: 'Realtime Chat',
+    tagline: 'Example card — not a real project (layout/hover preview only).',
+    description:
+      'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
+    tech: ['React', 'WebSocket', 'Node'],
+    placeholder: true,
+  },
+  {
+    id: 'example-notes',
+    number: '03',
+    title: 'Markdown Notes',
+    tagline: 'Example card — not a real project (layout/hover preview only).',
+    description:
+      'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
+    tech: ['TypeScript', 'IndexedDB', 'Vite'],
+    placeholder: true,
+  },
+  {
+    id: 'example-weather',
+    number: '04',
+    title: 'Weather Widget',
+    tagline: 'Example card — not a real project (layout/hover preview only).',
+    description:
+      'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
+    tech: ['React', 'REST API'],
+    placeholder: true,
+  },
+];
+
+const showExamples = import.meta.env.VITE_SHOW_EXAMPLE_PROJECTS === 'true';
+
+// Examples are appended only when explicitly enabled — never in production.
+export const projects = showExamples
+  ? [...realProjects, ...exampleProjects]
+  : realProjects;
+
 // Pre-create the lazy components keyed by project id so they are stable
-// across renders (React.lazy must not be called inside render).
+// across renders (React.lazy must not be called inside render). Placeholder
+// cards have no remote to load, so they are skipped here.
 export const lazyProjectComponents = Object.fromEntries(
-  projects.map((p) => [p.id, lazy(p.load)]),
+  projects.filter((p) => !p.placeholder).map((p) => [p.id, lazy(p.load)]),
 );
