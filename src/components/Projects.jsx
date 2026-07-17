@@ -11,7 +11,8 @@ export default function Projects({ onLaunch }) {
         {projects.map((p) => (
           <li key={p.id} className="project-card">
             <p className="project-card__eyebrow">
-              Showcase {p.number} · Microfrontend remote
+              Showcase {p.number} ·{' '}
+              {p.placeholder ? 'Example' : 'Microfrontend remote'}
             </p>
             <h3 className="project-card__title">{p.title}</h3>
             <p className="project-card__tagline">{p.tagline}</p>
@@ -24,29 +25,37 @@ export default function Projects({ onLaunch }) {
             </ul>
 
             <div className="project-card__actions">
-              <button
-                type="button"
-                className="btn btn--primary"
-                onClick={() => onLaunch(p.id)}
-              >
-                Launch in portfolio <ArrowIcon />
-              </button>
-              <a
-                className="btn btn--ghost"
-                href={p.liveUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Live site <ExternalLinkIcon />
-              </a>
-              <a
-                className="btn btn--ghost"
-                href={p.repoUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Code <CodeIcon />
-              </a>
+              {p.placeholder ? (
+                <button type="button" className="btn btn--ghost" disabled>
+                  Example — coming soon
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn--primary"
+                    onClick={() => onLaunch(p.id)}
+                  >
+                    Launch in portfolio <ArrowIcon />
+                  </button>
+                  <a
+                    className="btn btn--ghost"
+                    href={p.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Live site <ExternalLinkIcon />
+                  </a>
+                  <a
+                    className="btn btn--ghost"
+                    href={p.repoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Code <CodeIcon />
+                  </a>
+                </>
+              )}
             </div>
           </li>
         ))}
