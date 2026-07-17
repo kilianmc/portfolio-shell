@@ -12,21 +12,36 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('about');
   const [openProject, setOpenProject] = useState(null);
 
-  // Highlight the nav item for whichever section is in view.
+  // Highlight the nav item for whichever section is currently in view.
+  // Scroll-position based (not IntersectionObserver): a reference line at 40%
+  // of the viewport picks the last section whose top has passed it, which stays
+  // correct scrolling in both directions and through tall sections. At the very
+  // bottom of the page the last (short) section is forced active.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { rootMargin: '-40% 0px -55% 0px', threshold: 0 },
-    );
-    SECTIONS.forEach((id) => {
-      const node = document.getElementById(id);
-      if (node) observer.observe(node);
-    });
-    return () => observer.disconnect();
+    const getActiveSection = () => {
+      const doc = document.documentElement;
+      const atBottom =
+        window.innerHeight + window.scrollY >= doc.scrollHeight - 2;
+      if (atBottom) return SECTIONS[SECTIONS.length - 1];
+
+      const line = window.innerHeight * 0.4;
+      let current = SECTIONS[0];
+      for (const id of SECTIONS) {
+        const node = document.getElementById(id);
+        if (node && node.getBoundingClientRect().top <= line) current = id;
+      }
+      return current;
+    };
+
+    const onScroll = () => setActiveSection(getActiveSection());
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
   // Lock background scroll while the remote viewer is open.
