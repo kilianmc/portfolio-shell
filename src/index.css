@@ -55,20 +55,6 @@ a {
   color: #0a0e1a;
 }
 
-/* Cursor spotlight glow */
-.glow {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    600px circle at var(--glow-x, 50%) var(--glow-y, 0px),
-    rgba(255, 180, 84, 0.06),
-    transparent 40%
-  );
-  transition: background 0.1s;
-}
-
 /* ---------- Layout ---------- */
 .layout {
   position: relative;
