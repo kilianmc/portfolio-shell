@@ -93,16 +93,24 @@ following as a contract:
 
 ```bash
 npm install
-npm run dev      # Vite dev server on http://localhost:5173 (loads prod remote by default)
-npm run build    # production build (vite build) — must pass before PR
-npm run preview  # serve the production build locally
+npm run dev          # Vite dev server on http://localhost:5173 (loads prod remote by default)
+npm run build        # production build (vite build) — must pass before PR
+npm run preview      # serve the production build locally
+npm run lint         # ESLint (flat config) over the repo — must pass before PR
+npm run lint:fix     # ESLint with autofix
+npm run format       # Prettier --write across the repo
+npm run format:check # Prettier --check (what CI runs) — must pass before PR
 ```
 
 To develop against a locally running remote, create `.env` from `.env.example`
 and set `VITE_FUND_REMOTE_URL=http://localhost:5001/remoteEntry.js`.
 
-**No lint or test tooling exists yet** (added by issues #2 and #3). Do not
-reference `npm run lint`/`npm run test` or claim linting/tests until those land.
+Lint + format are enforced in CI (`.github/workflows/ci.yml`, job `lint-build`:
+`npm ci` → `npm run lint` → `npm run format:check` → `npm run build`). Run
+`npm run lint` and `npm run format:check` locally before opening a PR.
+
+**No test tooling exists yet** (added by issue #3). Do not reference
+`npm run test` or claim tests until that lands.
 
 ## Git & PR conventions
 

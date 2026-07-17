@@ -12,7 +12,12 @@ export default function ProjectViewer({ projectId, onClose }) {
   const RemoteApp = lazyProjectComponents[projectId];
 
   return (
-    <div className="viewer" role="dialog" aria-modal="true" aria-label={project.title}>
+    <div
+      className="viewer"
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.title}
+    >
       <div className="viewer__bar">
         <button type="button" className="viewer__back" onClick={onClose}>
           ← Back to portfolio
@@ -49,7 +54,9 @@ function RemoteLoading({ title }) {
       <p>
         Loading <strong>{title}</strong> remote…
       </p>
-      <p className="viewer__loading-sub">Fetching remoteEntry.js and shared chunks</p>
+      <p className="viewer__loading-sub">
+        Fetching remoteEntry.js and shared chunks
+      </p>
     </div>
   );
 }

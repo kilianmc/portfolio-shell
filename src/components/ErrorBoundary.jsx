@@ -22,7 +22,11 @@ export default class ErrorBoundary extends Component {
             {this.props.fallbackUrl ? (
               <>
                 It may be offline. Try the{' '}
-                <a href={this.props.fallbackUrl} target="_blank" rel="noreferrer">
+                <a
+                  href={this.props.fallbackUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   standalone site
                 </a>
                 .

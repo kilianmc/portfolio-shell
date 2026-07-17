@@ -9,7 +9,8 @@ export const projects = [
     id: 'fund-dashboard',
     number: '01',
     title: 'Fund Portfolio Dashboard',
-    tagline: 'A responsive fund analytics dashboard, loaded here as a microfrontend.',
+    tagline:
+      'A responsive fund analytics dashboard, loaded here as a microfrontend.',
     description:
       'Built from a single-file prototype into a component-based React app: an indexed performance chart with a benchmark and time-range toggle, headline KPIs, a scrollable holdings table, and an allocation donut. Runtime light/dark theming. It runs standalone and is exposed as a Module Federation remote — the panel below is that remote loaded live into this portfolio.',
     tech: ['React', 'Vite', 'Chart.js', 'SCSS', 'Module Federation'],
@@ -23,5 +24,5 @@ export const projects = [
 // Pre-create the lazy components keyed by project id so they are stable
 // across renders (React.lazy must not be called inside render).
 export const lazyProjectComponents = Object.fromEntries(
-  projects.map((p) => [p.id, lazy(p.load)])
+  projects.map((p) => [p.id, lazy(p.load)]),
 );

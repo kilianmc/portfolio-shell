@@ -1,7 +1,7 @@
 name: Bug report
 description: Report something that is broken in the portfolio shell.
-title: "fix: "
-labels: ["bug"]
+title: 'fix: '
+labels: ['bug']
 body:
   - type: markdown
     attributes:
