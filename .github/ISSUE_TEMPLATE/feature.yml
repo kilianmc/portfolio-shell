@@ -1,0 +1,48 @@
+name: Feature / task
+description: Propose a feature or scoped task for the portfolio shell.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the request. This repo is the Module Federation **host**
+        (see `CLAUDE.md`). Keep scope focused and never break remote loading.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What problem does this solve? Why is it needed now?
+      placeholder: Background, motivation, and any related issues/PRs.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is included — and explicitly out of scope?
+      placeholder: |
+        In scope:
+        - ...
+        Out of scope:
+        - ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Checklist that defines "done".
+      value: |
+        - [ ] ...
+        - [ ] `npm run build` still succeeds.
+        - [ ] Module Federation host contract unaffected (remote still loads).
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything else — constraints, design links, MF/remote impact.
+    validations:
+      required: false
