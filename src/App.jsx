@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import About from './components/About';
 import Experience from './components/Experience';
@@ -11,19 +11,6 @@ const SECTIONS = ['about', 'experience', 'projects', 'contact'];
 export default function App() {
   const [activeSection, setActiveSection] = useState('about');
   const [openProject, setOpenProject] = useState(null);
-  const glowRef = useRef(null);
-
-  // Cursor spotlight: move a radial-gradient glow toward the pointer.
-  useEffect(() => {
-    const el = glowRef.current;
-    if (!el || window.matchMedia('(pointer: coarse)').matches) return;
-    const onMove = (e) => {
-      el.style.setProperty('--glow-x', `${e.clientX}px`);
-      el.style.setProperty('--glow-y', `${e.clientY}px`);
-    };
-    window.addEventListener('pointermove', onMove);
-    return () => window.removeEventListener('pointermove', onMove);
-  }, []);
 
   // Highlight the nav item for whichever section is in view.
   useEffect(() => {
@@ -57,8 +44,6 @@ export default function App() {
 
   return (
     <div className="layout">
-      <div className="glow" ref={glowRef} aria-hidden="true" />
-
       <div className="layout__inner">
         <Sidebar activeSection={activeSection} onNavigate={handleNavigate} />
 
