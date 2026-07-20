@@ -5,6 +5,8 @@ import './Sidebar.scss';
 interface SidebarProps {
   activeSection: string;
   onNavigate: (id: string) => void;
+  onOpenJournal: () => void;
+  journalActive: boolean;
 }
 
 interface NavItem {
@@ -34,7 +36,12 @@ const SOCIALS: Social[] = [
   },
 ];
 
-export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
+export default function Sidebar({
+  activeSection,
+  onNavigate,
+  onOpenJournal,
+  journalActive,
+}: SidebarProps) {
   return (
     <header className="sidebar">
       <div className="sidebar__intro">
@@ -67,6 +74,27 @@ export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
               </a>
             </li>
           ))}
+
+          {/*
+           * The Dev Journal opens a full-screen overlay — it is an action, not a
+           * scroll anchor, so it is a <button> kept out of the SECTIONS
+           * scroll-spy (its own `journalActive` flag drives the active state).
+           */}
+          <li>
+            <button
+              type="button"
+              className={`sidebar__nav-link sidebar__nav-link--action${
+                journalActive ? ' is-active' : ''
+              }`}
+              onClick={onOpenJournal}
+            >
+              <span className="sidebar__nav-index">
+                {String(NAV.length + 1).padStart(2, '0')}
+              </span>
+              <span className="sidebar__nav-line" />
+              <span className="sidebar__nav-text">Dev Journal</span>
+            </button>
+          </li>
         </ul>
       </nav>
 
