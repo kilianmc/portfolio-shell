@@ -11,7 +11,7 @@ const SECTIONS = ['about', 'experience', 'projects', 'contact'];
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('about');
-  const [openProject, setOpenProject] = useState(null);
+  const [openProject, setOpenProject] = useState<string | null>(null);
 
   // Highlight the nav item for whichever section is currently in view.
   // Scroll-position based (not IntersectionObserver): a reference line at 40%
@@ -53,7 +53,7 @@ export default function App() {
     };
   }, [openProject]);
 
-  const handleNavigate = (id) => {
+  const handleNavigate = (id: string) => {
     const node = document.getElementById(id);
     if (node) node.scrollIntoView({ behavior: 'smooth' });
   };

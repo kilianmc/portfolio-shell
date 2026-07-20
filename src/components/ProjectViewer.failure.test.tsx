@@ -13,7 +13,7 @@ vi.mock('fundDashboard/App', () => {
 import ProjectViewer from './ProjectViewer';
 
 describe('ProjectViewer (remote fails to load)', () => {
-  let consoleError;
+  let consoleError: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});

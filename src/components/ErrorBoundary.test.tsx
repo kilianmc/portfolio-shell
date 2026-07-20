@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react';
 import ErrorBoundary from './ErrorBoundary';
 
 // A child that throws on render, to trip the boundary.
-function Boom() {
+function Boom(): never {
   throw new Error('kaboom');
 }
 
 describe('ErrorBoundary', () => {
-  let consoleError;
+  let consoleError: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     // React logs caught render errors to console.error; silence that expected

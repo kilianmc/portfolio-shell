@@ -1,14 +1,31 @@
+import type { ComponentType, SVGProps } from 'react';
 import { GitHubIcon, LinkedInIcon } from './icons';
 import './Sidebar.scss';
 
-const NAV = [
+interface SidebarProps {
+  activeSection: string;
+  onNavigate: (id: string) => void;
+}
+
+interface NavItem {
+  id: string;
+  label: string;
+}
+
+interface Social {
+  label: string;
+  href: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+}
+
+const NAV: NavItem[] = [
   { id: 'about', label: 'About' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'contact', label: 'Contact' },
 ];
 
-const SOCIALS = [
+const SOCIALS: Social[] = [
   { label: 'GitHub', href: 'https://github.com/kilianmc', Icon: GitHubIcon },
   {
     label: 'LinkedIn',
@@ -17,7 +34,7 @@ const SOCIALS = [
   },
 ];
 
-export default function Sidebar({ activeSection, onNavigate }) {
+export default function Sidebar({ activeSection, onNavigate }: SidebarProps) {
   return (
     <header className="sidebar">
       <div className="sidebar__intro">

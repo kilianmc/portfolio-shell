@@ -32,7 +32,7 @@ export default function Experience() {
                       <span className="xp__roles-range">{r.range}</span>
                     </div>
                     {r.desc && <p className="xp__role-desc">{r.desc}</p>}
-                    {r.bullets?.length > 0 && (
+                    {r.bullets && r.bullets.length > 0 && (
                       <ul className="xp__bullets">
                         {r.bullets.map((b, j) => (
                           <li key={j}>{b}</li>

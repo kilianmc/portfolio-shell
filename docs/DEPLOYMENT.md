@@ -2,7 +2,7 @@
 
 This repo is the Module Federation **host** for **kilianmc.com**. It consumes
 the `fundDashboard` remote via **`VITE_FUND_REMOTE_URL`** (read in
-`vite.config.js`, with the production remote as the built-in fallback).
+`vite.config.ts`, with the production remote as the built-in fallback).
 
 Branch model: long-lived **`dev`** (integration) + **`main`** (production).
 Feature PRs → `dev`; `main` receives only `dev`→`main` promotion PRs. Kilian
