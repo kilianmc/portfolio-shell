@@ -1,4 +1,10 @@
-export default function About() {
+import './About.scss';
+
+interface AboutProps {
+  onOpenJournal: () => void;
+}
+
+export default function About({ onOpenJournal }: AboutProps) {
   return (
     <section id="about" className="section" aria-label="About">
       <h2 className="section__heading section__heading--mobile">
@@ -12,12 +18,14 @@ export default function About() {
           are reliable, fast, and genuinely pleasant to use.
         </p>
         <p>
-          I&rsquo;m happiest working where systems meet — taking separately
-          built pieces and getting them to fit together into one seamless
-          product. This site is a demonstration of exactly that — a{' '}
-          <em>Microfrontend</em> shell that loads each showcase project as a
-          separate, independently deployed application at runtime, each exposed
-          as a <em>Module</em> and sharing a single React runtime.
+          This site is a <em>Microfrontend</em> shell that loads each showcase
+          project as a separate, independently deployed application at runtime.
+          For the full story of how it&rsquo;s built — the architecture and the
+          AI-collaboration process behind it — see the{' '}
+          <button type="button" className="prose__link" onClick={onOpenJournal}>
+            Dev Journal
+          </button>
+          .
         </p>
         <p>A few tools and technologies I work with:</p>
         <ul className="skills">

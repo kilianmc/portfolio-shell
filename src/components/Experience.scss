@@ -1,0 +1,143 @@
+@use '../styles/variables' as *;
+
+/* ---------- Experience ---------- */
+.xp {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.xp__item {
+  display: grid;
+  gap: 0.5rem 1.5rem;
+
+  @media (min-width: $bp-wide) {
+    grid-template-columns: 8rem 1fr;
+  }
+}
+
+.xp__range {
+  margin: 0.15rem 0 0;
+  font-family: $sh-font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $sh-text-faint;
+  white-space: nowrap;
+}
+
+.xp__company-head {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: $sh-text;
+
+  a {
+    color: $sh-accent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s;
+  }
+
+  a:hover svg {
+    transform: translate(2px, -2px);
+  }
+}
+
+.xp__location {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: $sh-text-faint;
+}
+
+.xp__roles {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.xp__role-item {
+  padding-left: 0.9rem;
+  border-left: 2px solid $sh-border;
+}
+
+.xp__role-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.xp__roles-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: $sh-text;
+}
+
+.xp__roles-range {
+  font-family: $sh-font-mono;
+  font-size: 0.68rem;
+  color: $sh-text-faint;
+  white-space: nowrap;
+}
+
+.xp__role-desc {
+  margin: 0.3rem 0 0;
+  color: $sh-text-dim;
+  font-size: 0.9rem;
+}
+
+.xp__bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  li {
+    position: relative;
+    padding-left: 1.3rem;
+    color: $sh-text-dim;
+    font-size: 0.92rem;
+  }
+
+  li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: $sh-accent;
+  }
+}
+
+.xp__tech {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0.9rem 0 0;
+
+  li {
+    font-family: $sh-font-mono;
+    font-size: 0.68rem;
+    color: $sh-text-dim;
+    background: $sh-accent-soft;
+    border: 1px solid $sh-border;
+    padding: 0.2rem 0.55rem;
+    border-radius: $radius-pill;
+  }
+}

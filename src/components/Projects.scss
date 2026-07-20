@@ -1,0 +1,112 @@
+@use '../styles/variables' as *;
+
+/* ---------- Project card ---------- */
+.projects {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-card {
+  position: relative;
+  padding: 1.75rem;
+  border: 1px solid $sh-border;
+  border-radius: 14px;
+  background: linear-gradient(180deg, $sh-bg-card, $sh-bg-elev);
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s,
+    background 0.25s;
+}
+
+/* Accent line that fades in along the top edge on hover (no movement). */
+.project-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(90deg, transparent, $sh-accent, transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+/*
+ * Hover language (shared by cards + primary buttons): no positional movement.
+ * Feedback = accent border + warm glow + top accent line + title accent.
+ */
+.project-card:hover {
+  border-color: $sh-accent;
+  background: linear-gradient(180deg, $sh-bg-elev, $sh-bg-elev);
+  box-shadow:
+    0 0 0 1px $sh-accent-soft,
+    0 20px 44px -20px rgba(0, 0, 0, 0.75),
+    0 0 30px -12px $sh-accent-line;
+}
+
+.project-card:hover::after {
+  opacity: 1;
+}
+
+.project-card__eyebrow {
+  margin: 0 0 0.4rem;
+  font-family: $sh-font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $sh-accent;
+}
+
+.project-card__title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: color 0.25s;
+}
+
+.project-card:hover .project-card__title {
+  color: $sh-accent;
+}
+
+.project-card__tagline {
+  margin: 0.3rem 0 1rem;
+  color: $sh-text;
+  font-weight: 500;
+}
+
+.project-card__desc {
+  margin: 0 0 1.25rem;
+  color: $sh-text-dim;
+  font-size: 0.95rem;
+}
+
+.project-card__tech {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0 0 1.5rem;
+
+  li {
+    font-family: $sh-font-mono;
+    font-size: 0.72rem;
+    color: $sh-text-dim;
+    background: $sh-accent-soft;
+    border: 1px solid $sh-border;
+    padding: 0.25rem 0.6rem;
+    border-radius: $radius-pill;
+  }
+}
+
+.project-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

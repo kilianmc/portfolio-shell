@@ -1,16 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { projects, lazyProjectComponents } from './projects';
+import type { RemoteProject } from './projects';
 import { experience } from './experience';
 
 describe('projects data', () => {
   it('contains the fund-dashboard remote entry', () => {
-    const fund = projects.find((p) => p.id === 'fund-dashboard');
+    const fund = projects.find((p) => p.id === 'fund-dashboard') as
+      RemoteProject | undefined;
     expect(fund).toBeDefined();
-    expect(fund.title).toBe('Fund Portfolio Dashboard');
-    expect(fund.liveUrl).toBe('https://ai-portfolio-project1.vercel.app');
-    expect(fund.repoUrl).toBe('https://github.com/kilianmc/fund-dashboard');
-    expect(fund.tech).toContain('Module Federation');
-    expect(typeof fund.load).toBe('function');
+    expect(fund!.title).toBe('Fund Portfolio Dashboard');
+    expect(fund!.liveUrl).toBe('https://ai-portfolio-project1.vercel.app');
+    expect(fund!.repoUrl).toBe('https://github.com/kilianmc/fund-dashboard');
+    expect(fund!.tech).toContain('Module Federation');
+    expect(typeof fund!.load).toBe('function');
   });
 
   it('has a non-empty, well-shaped entry for every project', () => {
@@ -23,9 +25,12 @@ describe('projects data', () => {
       expect(p.description.length).toBeGreaterThan(0);
       expect(Array.isArray(p.tech)).toBe(true);
       expect(p.tech.length).toBeGreaterThan(0);
-      expect(p.liveUrl).toMatch(/^https?:\/\//);
-      expect(p.repoUrl).toMatch(/^https?:\/\//);
-      expect(typeof p.load).toBe('function');
+      // The default project set is remote-backed (examples are opt-in and
+      // never enabled in tests); assert the remote-only fields.
+      const remote = p as RemoteProject;
+      expect(remote.liveUrl).toMatch(/^https?:\/\//);
+      expect(remote.repoUrl).toMatch(/^https?:\/\//);
+      expect(typeof remote.load).toBe('function');
     }
   });
 

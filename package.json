@@ -1,7 +1,7 @@
 {
   "name": "portfolio-shell",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "engines": {
     "node": ">=20.19"
@@ -14,14 +14,18 @@
     "test:run": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "version:dev": "npm version minor --no-git-tag-version",
     "version:release": "npm version major --no-git-tag-version"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -29,6 +33,9 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^26.1.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
@@ -38,6 +45,9 @@
     "globals": "^17.7.0",
     "jsdom": "^27.0.1",
     "prettier": "^3.9.5",
+    "sass": "^1.101.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0",
     "vite": "^8.1.4",
     "vitest": "^3.2.7"
   }

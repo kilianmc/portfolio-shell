@@ -1,7 +1,12 @@
 import { projects } from '../data/projects';
 import { ExternalLinkIcon, CodeIcon, ArrowIcon } from './icons';
+import './Projects.scss';
 
-export default function Projects({ onLaunch }) {
+interface ProjectsProps {
+  onLaunch: (id: string) => void;
+}
+
+export default function Projects({ onLaunch }: ProjectsProps) {
   return (
     <section id="projects" className="section" aria-label="Projects">
       <h2 className="section__heading section__heading--mobile">

@@ -1,0 +1,137 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  padding: 4rem 0 2rem;
+
+  @include desktop {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex: 0 0 42%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6rem 0;
+  }
+}
+
+.sidebar__name {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 3.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.sidebar__role {
+  margin: 0.6rem 0 0;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 600;
+  color: $sh-accent;
+}
+
+.sidebar__tagline {
+  margin: 1.2rem 0 0;
+  max-width: 22rem;
+  color: $sh-text-dim;
+  font-size: 1rem;
+}
+
+/* Nav */
+.sidebar__nav {
+  margin-top: 3rem;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin: 0.4rem 0;
+  }
+}
+
+.sidebar__nav-link {
+  @include flex-center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  color: $sh-text-faint;
+  font-family: $sh-font-mono;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* The Dev Journal item is a <button> (opens an overlay); reset native button
+   styling so it matches the anchor nav links exactly. */
+.sidebar__nav-link--action {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.sidebar__nav-link:focus-visible {
+  outline: 2px solid $sh-accent;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sidebar__nav-index {
+  font-size: 0.7rem;
+  color: $sh-text-faint;
+  transition: color 0.2s;
+}
+
+.sidebar__nav-line {
+  display: inline-block;
+  height: 1px;
+  width: 2rem;
+  background: $sh-text-faint;
+  transition:
+    width 0.2s,
+    background 0.2s;
+}
+
+.sidebar__nav-link:hover,
+.sidebar__nav-link.is-active {
+  color: $sh-text;
+}
+
+.sidebar__nav-link:hover .sidebar__nav-line,
+.sidebar__nav-link.is-active .sidebar__nav-line {
+  width: 3.5rem;
+  background: $sh-accent;
+}
+
+.sidebar__nav-link.is-active .sidebar__nav-index {
+  color: $sh-accent;
+}
+
+/* Socials */
+.sidebar__socials {
+  list-style: none;
+  display: flex;
+  gap: 1.2rem;
+  padding: 0;
+  margin: 2.5rem 0 0;
+
+  a {
+    color: $sh-text-dim;
+    transition:
+      color 0.2s,
+      transform 0.2s;
+    display: inline-flex;
+  }
+
+  a:hover {
+    color: $sh-accent;
+    transform: translateY(-3px);
+  }
+}

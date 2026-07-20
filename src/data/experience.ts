@@ -1,7 +1,28 @@
 // Experience entries, most recent first. Each entry is a company block with a
 // `roles` list (one or more positions held there). A role may carry a short
 // one-line `desc` and/or a `bullets` list.
-export const experience = [
+
+// A single position held at a company. Either `desc`, `bullets`, or both may
+// be present (see the data.test.ts invariant).
+export interface Role {
+  title: string;
+  range: string;
+  desc?: string;
+  bullets?: string[];
+}
+
+// A company block: one employer with one or more roles and a tech list.
+export interface Experience {
+  company: string;
+  range: string;
+  location: string;
+  // Optional link to the company (rendered as an external link when present).
+  url?: string;
+  roles: Role[];
+  tech: string[];
+}
+
+export const experience: Experience[] = [
   {
     company: 'Cognizant Netcentric',
     range: '2018 — Present',

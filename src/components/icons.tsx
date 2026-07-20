@@ -1,6 +1,6 @@
 // Minimal inline SVG icons (no icon-library dependency).
 
-export function GitHubIcon(props) {
+export function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 16 16"
@@ -15,7 +15,7 @@ export function GitHubIcon(props) {
   );
 }
 
-export function LinkedInIcon(props) {
+export function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -30,7 +30,7 @@ export function LinkedInIcon(props) {
   );
 }
 
-export function ExternalLinkIcon(props) {
+export function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -51,7 +51,7 @@ export function ExternalLinkIcon(props) {
   );
 }
 
-export function CodeIcon(props) {
+export function CodeIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -71,7 +71,7 @@ export function CodeIcon(props) {
   );
 }
 
-export function ArrowIcon(props) {
+export function ArrowIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"

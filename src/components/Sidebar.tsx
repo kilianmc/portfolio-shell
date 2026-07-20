@@ -1,13 +1,33 @@
+import type { ComponentType, SVGProps } from 'react';
 import { GitHubIcon, LinkedInIcon } from './icons';
+import './Sidebar.scss';
 
-const NAV = [
+interface SidebarProps {
+  activeSection: string;
+  onNavigate: (id: string) => void;
+  onOpenJournal: () => void;
+  journalActive: boolean;
+}
+
+interface NavItem {
+  id: string;
+  label: string;
+}
+
+interface Social {
+  label: string;
+  href: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+}
+
+const NAV: NavItem[] = [
   { id: 'about', label: 'About' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'contact', label: 'Contact' },
 ];
 
-const SOCIALS = [
+const SOCIALS: Social[] = [
   { label: 'GitHub', href: 'https://github.com/kilianmc', Icon: GitHubIcon },
   {
     label: 'LinkedIn',
@@ -16,7 +36,12 @@ const SOCIALS = [
   },
 ];
 
-export default function Sidebar({ activeSection, onNavigate }) {
+export default function Sidebar({
+  activeSection,
+  onNavigate,
+  onOpenJournal,
+  journalActive,
+}: SidebarProps) {
   return (
     <header className="sidebar">
       <div className="sidebar__intro">
@@ -49,6 +74,27 @@ export default function Sidebar({ activeSection, onNavigate }) {
               </a>
             </li>
           ))}
+
+          {/*
+           * The Dev Journal opens a full-screen overlay — it is an action, not a
+           * scroll anchor, so it is a <button> kept out of the SECTIONS
+           * scroll-spy (its own `journalActive` flag drives the active state).
+           */}
+          <li>
+            <button
+              type="button"
+              className={`sidebar__nav-link sidebar__nav-link--action${
+                journalActive ? ' is-active' : ''
+              }`}
+              onClick={onOpenJournal}
+            >
+              <span className="sidebar__nav-index">
+                {String(NAV.length + 1).padStart(2, '0')}
+              </span>
+              <span className="sidebar__nav-line" />
+              <span className="sidebar__nav-text">Dev Journal</span>
+            </button>
+          </li>
         </ul>
       </nav>
 

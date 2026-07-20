@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
-import { defineConfig, loadEnv } from 'vite';
+import { loadEnv } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { federation } from '@module-federation/vite';
 
@@ -24,7 +25,9 @@ export default defineConfig(({ mode }) => {
       !isTest &&
         federation({
           name: 'shell',
-          // JS project (no tsconfig.json) — skip federated type generation.
+          // The `fundDashboard` remote is a plain-JS project — skip federated
+          // type generation. The exposed module is typed locally instead via
+          // src/types/remotes.d.ts.
           dts: false,
           remotes: {
             fundDashboard: {
@@ -48,13 +51,23 @@ export default defineConfig(({ mode }) => {
       ? {
           alias: {
             'fundDashboard/App': fileURLToPath(
-              new URL('./src/test/remoteAppStub.jsx', import.meta.url),
+              new URL('./src/test/remoteAppStub.tsx', import.meta.url),
             ),
           },
         }
       : undefined,
-    // Ensure the automatic JSX runtime is used when compiling .jsx test files.
+    // Ensure the automatic JSX runtime is used when compiling .tsx test files.
     esbuild: { jsx: 'automatic' },
+    // Use Dart Sass's modern compiler (avoids the legacy JS API deprecation
+    // warning). Vite 8 makes the modern compiler the default and dropped the
+    // explicit `api: 'modern-compiler'` option from its Sass types, so it is
+    // no longer set here — the compilation behavior is unchanged. SCSS
+    // partials live in src/styles.
+    css: {
+      preprocessorOptions: {
+        scss: {},
+      },
+    },
     // Module Federation relies on top-level await; needs a modern target.
     build: {
       target: 'chrome89',
@@ -65,7 +78,7 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       globals: true,
-      setupFiles: './src/test/setup.js',
+      setupFiles: './src/test/setup.ts',
     },
   };
 });
