@@ -1,0 +1,25 @@
+@use 'variables' as *;
+
+// ===== Layout helpers =====
+// The shell's most common flex pattern: a horizontal, vertically-centered row.
+// Callers add their own gap / justify-content / flex-direction as needed.
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+// ===== Responsive breakpoints =====
+// The two-column desktop layout kicks in at $bp-desktop; used by the layout
+// shell and the sidebar.
+@mixin desktop {
+  @media (min-width: $bp-desktop) {
+    @content;
+  }
+}
+
+// ===== Motion =====
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}

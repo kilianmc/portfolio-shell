@@ -1,4 +1,5 @@
 import { GitHubIcon, LinkedInIcon } from './icons';
+import './Sidebar.scss';
 
 const NAV = [
   { id: 'about', label: 'About' },

@@ -1,5 +1,6 @@
 import { projects } from '../data/projects';
 import { ExternalLinkIcon, CodeIcon, ArrowIcon } from './icons';
+import './Projects.scss';
 
 export default function Projects({ onLaunch }) {
   return (
