@@ -119,13 +119,49 @@ Lint, format, tests, and build are enforced in CI (`.github/workflows/ci.yml`,
 job `lint-build`: `npm ci` → `npm run lint` → `npm run format:check` →
 `npm run test:run` → `npm run build`). Run these locally before opening a PR.
 
+## Deployment (dev→prod)
+
+This repo (the MF **host**, production **kilianmc.com**) follows the standard
+dev→prod flow. See `docs/DEPLOYMENT.md` for the concrete Vercel-dashboard
+checklist.
+
+- **Branch model.** Two long-lived branches: **`dev`** (integration) and
+  **`main`** (production). **Feature PRs target `dev`.** `main` receives only
+  **`dev`→`main` promotion PRs** — never merge a feature branch straight into
+  `main`.
+- **Vercel deploys.** The **`dev`** branch auto-deploys to a stable **dev URL**;
+  **`main`** deploys to **production (kilianmc.com)**. Feature branches get
+  ephemeral preview deploys.
+- **Per-environment remote URL.** The host loads the `fundDashboard` remote from
+  **`VITE_FUND_REMOTE_URL`** (read in `vite.config.js`, prod default preserved).
+  Set it per Vercel scope so the dev shell loads the dev remote and prod loads
+  prod:
+  - **Production** scope →
+    `https://ai-portfolio-project1.vercel.app/remoteEntry.js`
+  - **Preview** scope (covers the `dev` branch and all non-prod deploys) →
+    `https://ai-portfolio-project1-git-dev-kilianmc.vercel.app/remoteEntry.js`
+    — Kilian confirms the exact dev slug from the fund-dashboard Vercel
+    dashboard, since it must match what that project's dev deploy actually
+    serves.
+- **Promotion / approval.** Kilian manually tests the **dev URL**, then merges
+  the `dev`→`main` promotion PR to ship. Kilian holds the merge gate.
+- **Versioning.** Baseline production = **1.0.0**. Dev iterations bump the
+  **minor** (`npm run version:dev`: 1.1.0 → 1.2.0 …); each production release
+  bumps the **major** and resets minor (`npm run version:release`: → 2.0.0).
+  Production carries whole majors; dev carries the in-progress minors.
+- **Gate / ruleset.** Both `dev` and `main` require a PR plus a green
+  **`lint-build`** CI check (`npm run lint` → `npm run format:check` →
+  `npm run test:run` → `npm run build`) before merge.
+
 ## Git & PR conventions
 
 - **Conventional Commits**: `feat:`, `fix:`, `chore:`, `test:`, `docs:` (plus
   `refactor:`/`perf:` as needed).
 - **Branch naming** mirrors the type: `feat/…`, `fix/…`, `chore/…`, `test/…`,
   `docs/…`.
-- **PRs:** one focused change per PR. Link the issue (`Closes #N`), keep the
+- **PRs:** one focused change per PR. **Feature PRs target `dev`** (production
+  `main` receives only `dev`→`main` promotion PRs — see
+  **Deployment (dev→prod)** above). Link the issue (`Closes #N`), keep the
   diff tight, and fill in the PR template — including a **preview URL** (Vercel
   deploy preview) and screenshots for any visual change.
 - **Never break the MF host contract** (above). If a change touches remote
