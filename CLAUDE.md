@@ -139,10 +139,10 @@ checklist.
   - **Production** scope →
     `https://ai-portfolio-project1.vercel.app/remoteEntry.js`
   - **Preview** scope (covers the `dev` branch and all non-prod deploys) →
-    `https://ai-portfolio-project1-git-dev-kilianmc.vercel.app/remoteEntry.js`
-    — Kilian confirms the exact dev slug from the fund-dashboard Vercel
-    dashboard, since it must match what that project's dev deploy actually
-    serves.
+    `https://ai-portfolio-project1-git-dev-kilians-projects-7425dee2.vercel.app/remoteEntry.js`
+    (confirmed 2026-07-20; slug uses the team scope). Vercel Deployment
+    Protection must stay **off** for previews or the dev remote is SSO-gated —
+    see `docs/DEPLOYMENT.md`.
 - **Promotion / approval.** Kilian manually tests the **dev URL**, then merges
   the `dev`→`main` promotion PR to ship. Kilian holds the merge gate.
 - **Versioning.** Baseline production = **1.0.0**. Dev iterations bump the
