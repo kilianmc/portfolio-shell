@@ -68,6 +68,21 @@
   transition: color 0.2s;
 }
 
+/* The Dev Journal item is a <button> (opens an overlay); reset native button
+   styling so it matches the anchor nav links exactly. */
+.sidebar__nav-link--action {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.sidebar__nav-link:focus-visible {
+  outline: 2px solid $sh-accent;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .sidebar__nav-index {
   font-size: 0.7rem;
   color: $sh-text-faint;

@@ -16,6 +16,23 @@
   font-style: normal;
 }
 
+/* Inline link rendered as a <button> that opens the Dev Journal overlay. */
+.prose__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: $sh-accent;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover,
+  &:focus-visible {
+    color: $sh-text;
+  }
+}
+
 .skills {
   list-style: none;
   padding: 0;

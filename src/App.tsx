@@ -4,6 +4,7 @@ import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
 import ProjectViewer from './components/ProjectViewer';
+import JournalViewer from './components/JournalViewer';
 import { LinkedInIcon } from './components/icons';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -12,6 +13,7 @@ const SECTIONS = ['about', 'experience', 'projects', 'contact'];
 export default function App() {
   const [activeSection, setActiveSection] = useState('about');
   const [openProject, setOpenProject] = useState<string | null>(null);
+  const [journalOpen, setJournalOpen] = useState(false);
 
   // Highlight the nav item for whichever section is currently in view.
   // Scroll-position based (not IntersectionObserver): a reference line at 40%
@@ -45,13 +47,13 @@ export default function App() {
     };
   }, []);
 
-  // Lock background scroll while the remote viewer is open.
+  // Lock background scroll while either full-screen overlay is open.
   useEffect(() => {
-    document.body.style.overflow = openProject ? 'hidden' : '';
+    document.body.style.overflow = openProject || journalOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [openProject]);
+  }, [openProject, journalOpen]);
 
   const handleNavigate = (id: string) => {
     const node = document.getElementById(id);
@@ -62,10 +64,15 @@ export default function App() {
     <>
       <div className="layout">
         <div className="layout__inner">
-          <Sidebar activeSection={activeSection} onNavigate={handleNavigate} />
+          <Sidebar
+            activeSection={activeSection}
+            onNavigate={handleNavigate}
+            onOpenJournal={() => setJournalOpen(true)}
+            journalActive={journalOpen}
+          />
 
           <main className="content" id="content">
-            <About />
+            <About onOpenJournal={() => setJournalOpen(true)} />
             <Experience />
             <Projects onLaunch={setOpenProject} />
 
@@ -106,6 +113,8 @@ export default function App() {
             onClose={() => setOpenProject(null)}
           />
         )}
+
+        {journalOpen && <JournalViewer onClose={() => setJournalOpen(false)} />}
       </div>
 
       <Analytics />
