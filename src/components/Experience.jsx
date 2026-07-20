@@ -1,5 +1,6 @@
 import { experience } from '../data/experience';
 import { ExternalLinkIcon } from './icons';
+import './Experience.scss';
 
 export default function Experience() {
   return (

@@ -1,0 +1,46 @@
+@use '../styles/variables' as *;
+
+/* ---------- About / prose ---------- */
+.prose p {
+  color: $sh-text-dim;
+  margin: 0 0 1rem;
+}
+
+.prose strong {
+  color: $sh-text;
+  font-weight: 600;
+}
+
+.prose em {
+  color: $sh-accent;
+  font-style: normal;
+}
+
+.skills {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem 1.5rem;
+  max-width: 34rem;
+
+  li {
+    position: relative;
+    padding-left: 1.2rem;
+    font-family: $sh-font-mono;
+    font-size: 0.85rem;
+    color: $sh-text-dim;
+  }
+
+  li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: $sh-accent;
+  }
+}
+
+.skills__wide {
+  grid-column: span 2;
+}

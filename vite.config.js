@@ -55,6 +55,15 @@ export default defineConfig(({ mode }) => {
       : undefined,
     // Ensure the automatic JSX runtime is used when compiling .jsx test files.
     esbuild: { jsx: 'automatic' },
+    // Use Dart Sass's modern compiler API (avoids the legacy JS API
+    // deprecation warning). SCSS partials live in src/styles.
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
     // Module Federation relies on top-level await; needs a modern target.
     build: {
       target: 'chrome89',

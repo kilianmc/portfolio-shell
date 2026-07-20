@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { projects, lazyProjectComponents } from '../data/projects';
 import ErrorBoundary from './ErrorBoundary';
+import './ProjectViewer.scss';
 
 // Full-viewport overlay that mounts a showcase project's federated remote.
 // The remote is only imported when the viewer opens (React.lazy), so the

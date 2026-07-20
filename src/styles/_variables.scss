@@ -1,0 +1,34 @@
+// ===== Shell design tokens =====
+// Themed values resolve at runtime through the shell's namespaced (--sh-*)
+// custom properties, whose literal values live in the :root block in
+// index.scss. Aliasing them as Sass variables keeps partials terse while the
+// runtime custom properties stay the single source of truth (and keep a
+// later-loaded remote from clobbering the shell's theme).
+
+// Colors / surfaces
+$sh-bg: var(--sh-bg);
+$sh-bg-elev: var(--sh-bg-elev);
+$sh-bg-card: var(--sh-bg-card);
+$sh-border: var(--sh-border);
+$sh-text: var(--sh-text);
+$sh-text-dim: var(--sh-text-dim);
+$sh-text-faint: var(--sh-text-faint);
+$sh-accent: var(--sh-accent);
+$sh-accent-soft: var(--sh-accent-soft);
+$sh-accent-line: var(--sh-accent-line);
+
+// Type
+$sh-font-sans: var(--sh-font-sans);
+$sh-font-mono: var(--sh-font-mono);
+
+// Layout
+$sh-maxw: var(--sh-maxw);
+
+// ===== Static tokens (not themed) =====
+// Breakpoints
+$bp-wide: 700px;
+$bp-desktop: 1024px;
+
+// Radii
+$radius-sm: 8px; // buttons / viewer controls
+$radius-pill: 999px; // tech tags / badges
