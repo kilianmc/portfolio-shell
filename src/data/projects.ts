@@ -1,10 +1,38 @@
 import { lazy } from 'react';
+import type { ComponentType, LazyExoticComponent } from 'react';
+
+// Fields shared by every project card.
+interface BaseProject {
+  id: string;
+  number: string;
+  title: string;
+  tagline: string;
+  description: string;
+  tech: string[];
+}
+
+// A real showcase project backed by a Module Federation remote. `load` is a
+// dynamic import of the remote's exposed component (wrapped in React.lazy);
+// `liveUrl`/`repoUrl` point at the standalone deployment and its source.
+export interface RemoteProject extends BaseProject {
+  liveUrl: string;
+  repoUrl: string;
+  load: () => Promise<{ default: ComponentType }>;
+  placeholder?: false;
+}
+
+// An HTML-only example card with no remote behind it (layout preview only).
+export interface PlaceholderProject extends BaseProject {
+  placeholder: true;
+}
+
+export type Project = RemoteProject | PlaceholderProject;
 
 // Each showcase project is a Module Federation remote. `load` is a dynamic
 // import of the remote's exposed component, wrapped in React.lazy at the
 // component that renders it. `liveUrl`/`repoUrl` point at the standalone
 // deployment and its source.
-const realProjects = [
+const realProjects: RemoteProject[] = [
   {
     id: 'fund-dashboard',
     number: '01',
@@ -24,7 +52,7 @@ const realProjects = [
 // HTML-only example cards for previewing layout/hover with a fuller grid.
 // NOT shown in production. Enable locally with VITE_SHOW_EXAMPLE_PROJECTS=true
 // (add it to a .env.local file, or run: VITE_SHOW_EXAMPLE_PROJECTS=true npm run dev).
-const exampleProjects = [
+const exampleProjects: PlaceholderProject[] = [
   {
     id: 'example-chat',
     number: '02',
@@ -60,13 +88,18 @@ const exampleProjects = [
 const showExamples = import.meta.env.VITE_SHOW_EXAMPLE_PROJECTS === 'true';
 
 // Examples are appended only when explicitly enabled — never in production.
-export const projects = showExamples
+export const projects: Project[] = showExamples
   ? [...realProjects, ...exampleProjects]
   : realProjects;
 
 // Pre-create the lazy components keyed by project id so they are stable
 // across renders (React.lazy must not be called inside render). Placeholder
 // cards have no remote to load, so they are skipped here.
-export const lazyProjectComponents = Object.fromEntries(
-  projects.filter((p) => !p.placeholder).map((p) => [p.id, lazy(p.load)]),
+export const lazyProjectComponents: Record<
+  string,
+  LazyExoticComponent<ComponentType>
+> = Object.fromEntries(
+  projects
+    .filter((p): p is RemoteProject => !p.placeholder)
+    .map((p) => [p.id, lazy(p.load)]),
 );

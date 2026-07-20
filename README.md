@@ -36,4 +36,5 @@ Then in the fund-dashboard repo: `npm run build:remote` + `npm run serve:remote`
 
 ## Tech
 
-React 18 · Vite 8 · `@module-federation/vite` · plain CSS. Deployed on Vercel.
+React 18 · TypeScript (strict) · Vite 8 · `@module-federation/vite` · SCSS.
+Deployed on Vercel.

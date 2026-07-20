@@ -6,9 +6,19 @@ import './ProjectViewer.scss';
 // Full-viewport overlay that mounts a showcase project's federated remote.
 // The remote is only imported when the viewer opens (React.lazy), so the
 // shell's initial load never pays for remote code.
-export default function ProjectViewer({ projectId, onClose }) {
+interface ProjectViewerProps {
+  projectId: string;
+  onClose: () => void;
+}
+
+export default function ProjectViewer({
+  projectId,
+  onClose,
+}: ProjectViewerProps) {
   const project = projects.find((p) => p.id === projectId);
-  if (!project) return null;
+  // Only real remote-backed projects are ever launched (placeholder cards have
+  // no launch button); bail out for an unknown or placeholder id.
+  if (!project || project.placeholder) return null;
 
   const RemoteApp = lazyProjectComponents[projectId];
 
@@ -48,7 +58,7 @@ export default function ProjectViewer({ projectId, onClose }) {
   );
 }
 
-function RemoteLoading({ title }) {
+function RemoteLoading({ title }: { title: string }) {
   return (
     <div className="viewer__loading">
       <div className="spinner" aria-hidden="true" />
