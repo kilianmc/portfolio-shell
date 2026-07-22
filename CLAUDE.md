@@ -28,7 +28,7 @@ agents that open focused PRs. Keep changes small and reviewable.
 - **`@module-federation/vite`** for Module Federation (host role).
 - **SCSS** — a global `src/index.scss` plus per-component `.scss` and shared
   partials under `src/styles/`. No CSS modules, no CSS-in-JS.
-- **Node** per `.nvmrc` = `23.10.0` (`package.json` engines: `>=20.19`).
+- **Node** per `.nvmrc` = `24` (LTS; `package.json` engines: `>=22.12.0`).
 - Deployed on **Vercel** via Git integration (SPA rewrite in `vercel.json`).
 
 > **Why TypeScript here (and _not_ in `fund-dashboard`)?** The
