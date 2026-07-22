@@ -36,10 +36,28 @@ html {
   background: $sh-bg;
 }
 
-/* `html body` wins over any remote's later-loaded `body {}` rule. */
+/*
+ * The shared <body> carries only surface + reset — NOT the shell's typography.
+ * In Module Federation host + remote share one document (one <body>), so any
+ * inheritable property painted here (color, font-*, smoothing…) would cascade
+ * into a mounted remote and override the text styling it inherits from its own
+ * `body {}` rule — visible as washed-out text once themes diverge. Keeping the
+ * body typography-neutral lets each remote's own base govern its subtree.
+ * `html body` (two type selectors) still out-specifies a remote's `body {}` for
+ * `background`, so the landing surface stays the shell's.
+ */
 html body {
   margin: 0;
   background: $sh-bg;
+}
+
+/*
+ * Shell typography lives on `.shell`, the wrapper around all shell-owned UI.
+ * Mounted remotes render as a SIBLING of `.shell` (see App.tsx), so they never
+ * inherit the shell's text styles — the bleed is fixed at the source, for every
+ * inheritable property and any future remote, without per-remote coupling.
+ */
+.shell {
   color: $sh-text;
   font-family: $sh-font-sans;
   font-size: 16px;
