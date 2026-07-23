@@ -41,3 +41,7 @@ Do this in the **portfolio-shell** Vercel project (Settings):
       `fundDashboard` remote mounts (loaded from the **dev** remoteEntry).
 - [ ] Open **kilianmc.com** and confirm the remote mounts (loaded from the
       **prod** remoteEntry).
+- [ ] Launch the **Photography Portfolio** project and confirm the Astro site
+      loads in the viewer `<iframe>` (from `https://artlaia.pages.dev`). This is
+      an iframe integration — no env var, `embedUrl` is a constant in
+      `src/data/projects.ts`, so it behaves identically across dev and prod.

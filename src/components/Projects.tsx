@@ -17,7 +17,11 @@ export default function Projects({ onLaunch }: ProjectsProps) {
           <li key={p.id} className="project-card">
             <p className="project-card__eyebrow">
               Showcase {p.number} ·{' '}
-              {p.placeholder ? 'Example' : 'Microfrontend remote'}
+              {p.kind === 'remote'
+                ? 'Microfrontend remote'
+                : p.kind === 'embedded'
+                  ? 'iframe integration'
+                  : 'Example'}
             </p>
             <h3 className="project-card__title">{p.title}</h3>
             <p className="project-card__tagline">{p.tagline}</p>
@@ -30,7 +34,7 @@ export default function Projects({ onLaunch }: ProjectsProps) {
             </ul>
 
             <div className="project-card__actions">
-              {p.placeholder ? (
+              {p.kind === 'placeholder' ? (
                 <button type="button" className="btn btn--ghost" disabled>
                   Example — coming soon
                 </button>

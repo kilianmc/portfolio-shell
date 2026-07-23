@@ -11,30 +11,46 @@ interface BaseProject {
   tech: string[];
 }
 
+// The shell composes projects via two integration patterns, plus HTML-only
+// example cards. Each variant is discriminated by `kind`:
+// - 'remote'      — a Module Federation remote (shared-runtime React), loaded
+//                   via `load()` (React.lazy) into the viewer.
+// - 'embedded'    — a fully independent app of any stack, composed via an
+//                   iframe (`embedUrl`) — the framework-agnostic microfrontend.
+// - 'placeholder' — an HTML-only example card (layout preview only).
+
 // A real showcase project backed by a Module Federation remote. `load` is a
 // dynamic import of the remote's exposed component (wrapped in React.lazy);
 // `liveUrl`/`repoUrl` point at the standalone deployment and its source.
 export interface RemoteProject extends BaseProject {
+  kind: 'remote';
   liveUrl: string;
   repoUrl: string;
   load: () => Promise<{ default: ComponentType }>;
-  placeholder?: false;
 }
 
-// An HTML-only example card with no remote behind it (layout preview only).
+// A real showcase project that is a fully independent app (any stack), composed
+// into the shell via an iframe. `embedUrl` is the deployed site loaded inside
+// the viewer; `liveUrl`/`repoUrl` point at that deployment and its source.
+export interface EmbeddedProject extends BaseProject {
+  kind: 'embedded';
+  embedUrl: string;
+  liveUrl: string;
+  repoUrl: string;
+}
+
+// An HTML-only example card with no project behind it (layout preview only).
 export interface PlaceholderProject extends BaseProject {
-  placeholder: true;
+  kind: 'placeholder';
 }
 
-export type Project = RemoteProject | PlaceholderProject;
+export type Project = RemoteProject | EmbeddedProject | PlaceholderProject;
 
-// Each showcase project is a Module Federation remote. `load` is a dynamic
-// import of the remote's exposed component, wrapped in React.lazy at the
-// component that renders it. `liveUrl`/`repoUrl` point at the standalone
-// deployment and its source.
-const realProjects: RemoteProject[] = [
+// The real, production-visible projects — one of each integration pattern.
+const realProjects: (RemoteProject | EmbeddedProject)[] = [
   {
     id: 'fund-dashboard',
+    kind: 'remote',
     number: '01',
     title: 'Fund Portfolio Dashboard',
     tagline:
@@ -47,6 +63,26 @@ const realProjects: RemoteProject[] = [
     // Federated import — resolved by @module-federation/vite at runtime.
     load: () => import('fundDashboard/App'),
   },
+  {
+    id: 'photography-portfolio',
+    kind: 'embedded',
+    number: '02',
+    title: 'Photography Portfolio',
+    tagline:
+      'A museum-quality photography portfolio — an independently built Astro site, loaded here inside the portfolio via iframe integration.',
+    description:
+      "A warm, content-driven photography portfolio built with Astro (static output), Tailwind v4, and Markdown content collections, with a git-based CMS so the artist self-serves and multilingual UI chrome. Deployed on Cloudflare Pages. Unlike the fund dashboard's Module Federation remote, this is a fully independent app of a different stack — composed into the portfolio via iframe integration, the framework-agnostic microfrontend pattern.",
+    tech: [
+      'Astro',
+      'TypeScript',
+      'Tailwind CSS',
+      'Cloudflare Pages',
+      'iframe integration',
+    ],
+    embedUrl: 'https://artlaia.pages.dev',
+    liveUrl: 'https://artlaia.pages.dev',
+    repoUrl: 'https://github.com/kilianmc/photography-portfolio',
+  },
 ];
 
 // HTML-only example cards for previewing layout/hover with a fuller grid.
@@ -55,33 +91,33 @@ const realProjects: RemoteProject[] = [
 const exampleProjects: PlaceholderProject[] = [
   {
     id: 'example-chat',
-    number: '02',
+    kind: 'placeholder',
+    number: '03',
     title: 'Realtime Chat',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:
       'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
     tech: ['React', 'WebSocket', 'Node'],
-    placeholder: true,
   },
   {
     id: 'example-notes',
-    number: '03',
+    kind: 'placeholder',
+    number: '04',
     title: 'Markdown Notes',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:
       'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
     tech: ['TypeScript', 'IndexedDB', 'Vite'],
-    placeholder: true,
   },
   {
     id: 'example-weather',
-    number: '04',
+    kind: 'placeholder',
+    number: '05',
     title: 'Weather Widget',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:
       'Placeholder used to see how the projects section and hover treatment behave with several cards. No live deployment or remote behind it.',
     tech: ['React', 'REST API'],
-    placeholder: true,
   },
 ];
 
@@ -93,13 +129,14 @@ export const projects: Project[] = showExamples
   : realProjects;
 
 // Pre-create the lazy components keyed by project id so they are stable
-// across renders (React.lazy must not be called inside render). Placeholder
-// cards have no remote to load, so they are skipped here.
+// across renders (React.lazy must not be called inside render). Only Module
+// Federation remotes have a `load` to import — embedded (iframe) and
+// placeholder cards have no remote and are skipped here.
 export const lazyProjectComponents: Record<
   string,
   LazyExoticComponent<ComponentType>
 > = Object.fromEntries(
   projects
-    .filter((p): p is RemoteProject => !p.placeholder)
+    .filter((p): p is RemoteProject => p.kind === 'remote')
     .map((p) => [p.id, lazy(p.load)]),
 );
