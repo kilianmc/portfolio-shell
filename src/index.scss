@@ -219,11 +219,13 @@ a {
   font-size: clamp(2rem, 5vw, 2.8rem);
   margin: 0.5rem 0 1rem;
   font-weight: 800;
+  overflow-wrap: break-word;
 }
 
 .contact__text {
   color: $sh-text-dim;
   margin: 0 0 2rem;
+  overflow-wrap: break-word;
 }
 
 /* ---------- Footer ---------- */

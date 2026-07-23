@@ -68,6 +68,7 @@
   font-size: 1.4rem;
   font-weight: 700;
   transition: color 0.25s;
+  overflow-wrap: break-word;
 }
 
 .project-card:hover .project-card__title {
@@ -78,12 +79,14 @@
   margin: 0.3rem 0 1rem;
   color: $sh-text;
   font-weight: 500;
+  overflow-wrap: break-word;
 }
 
 .project-card__desc {
   margin: 0 0 1.25rem;
   color: $sh-text-dim;
   font-size: 0.95rem;
+  overflow-wrap: break-word;
 }
 
 .project-card__tech {
@@ -102,6 +105,8 @@
     border: 1px solid $sh-border;
     padding: 0.25rem 0.6rem;
     border-radius: $radius-pill;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 }
 

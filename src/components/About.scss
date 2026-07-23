@@ -4,6 +4,7 @@
 .prose p {
   color: $sh-text-dim;
   margin: 0 0 1rem;
+  overflow-wrap: break-word;
 }
 
 .prose strong {
@@ -48,6 +49,7 @@
     font-family: $sh-font-mono;
     font-size: 0.85rem;
     color: $sh-text-dim;
+    overflow-wrap: break-word;
   }
 
   li::before {

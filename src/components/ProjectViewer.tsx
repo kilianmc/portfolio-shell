@@ -51,7 +51,9 @@ export default function ProjectViewer({
           ← Back to portfolio
         </button>
         <span className="viewer__title">
-          {project.title}
+          <span className="viewer__title-text" title={project.title}>
+            {project.title}
+          </span>
           <span className="viewer__badge">
             {isEmbedded
               ? 'iframe · framework-agnostic'
