@@ -48,6 +48,12 @@ describe('ProjectViewer (remote resolves)', () => {
       screen.getByRole('dialog', { name: 'Fund Portfolio Dashboard' }),
     ).toBeInTheDocument();
     expect(screen.getByText('remote · Module Federation')).toBeInTheDocument();
+    // The overlay title truncates (single-line ellipsis) so the full text must
+    // stay accessible via a `title` attribute on the title element.
+    expect(screen.getByText('Fund Portfolio Dashboard')).toHaveAttribute(
+      'title',
+      'Fund Portfolio Dashboard',
+    );
     const ext = screen.getByRole('link', { name: /Open standalone/ });
     expect(ext).toHaveAttribute(
       'href',

@@ -24,6 +24,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.05;
+  overflow-wrap: break-word;
 }
 
 .sidebar__role {
@@ -31,6 +32,7 @@
   font-size: clamp(1.1rem, 2.2vw, 1.35rem);
   font-weight: 600;
   color: $sh-accent;
+  overflow-wrap: break-word;
 }
 
 .sidebar__tagline {
@@ -38,6 +40,7 @@
   max-width: 22rem;
   color: $sh-text-dim;
   font-size: 1rem;
+  overflow-wrap: break-word;
 }
 
 /* Nav */
@@ -66,6 +69,13 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.2s;
+  // Allow the label to wrap rather than overflow the fixed-width nav line.
+  min-width: 0;
+}
+
+.sidebar__nav-text {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 /* The Dev Journal item is a <button> (opens an overlay); reset native button
