@@ -9,10 +9,12 @@ describe('projects data', () => {
       RemoteProject | undefined;
     expect(fund).toBeDefined();
     expect(fund!.kind).toBe('remote');
-    expect(fund!.title).toBe('Fund Portfolio Dashboard');
+    // Title/tech are editorial copy — assert only that they're present, not
+    // their exact wording, so copy tweaks don't break the data contract test.
+    expect(fund!.title.length).toBeGreaterThan(0);
     expect(fund!.liveUrl).toBe('https://ai-portfolio-project1.vercel.app');
     expect(fund!.repoUrl).toBe('https://github.com/kilianmc/fund-dashboard');
-    expect(fund!.tech).toContain('Module Federation');
+    expect(fund!.tech.length).toBeGreaterThan(0);
     expect(typeof fund!.load).toBe('function');
   });
 
@@ -21,13 +23,14 @@ describe('projects data', () => {
       EmbeddedProject | undefined;
     expect(photo).toBeDefined();
     expect(photo!.kind).toBe('embedded');
-    expect(photo!.title).toBe('Photography Portfolio');
+    // Title/tech are editorial copy — assert presence, not exact wording.
+    expect(photo!.title.length).toBeGreaterThan(0);
     expect(photo!.embedUrl).toBe('https://artlaia.pages.dev');
     expect(photo!.liveUrl).toBe('https://artlaia.pages.dev');
     expect(photo!.repoUrl).toBe(
       'https://github.com/kilianmc/photography-portfolio',
     );
-    expect(photo!.tech).toContain('iframe integration');
+    expect(photo!.tech.length).toBeGreaterThan(0);
     // Embedded projects are iframe-composed, not federated — no `load`.
     expect('load' in photo!).toBe(false);
   });

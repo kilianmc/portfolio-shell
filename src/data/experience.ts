@@ -31,7 +31,7 @@ export const experience: Experience[] = [
       {
         title: 'AI Orchestrator (Full-Stack) · Senior Associate',
         range: 'Jun 2026 — Present',
-        desc: 'Orchestrating AI-assisted workflows and tooling across the full stack.',
+        desc: 'Orchestrating AI-assisted workflows and developing across the full stack.',
       },
       {
         title: 'Front-End Software Engineer · Senior Associate',
@@ -54,7 +54,7 @@ export const experience: Experience[] = [
         desc: 'Implementing front-end components and integrations.',
       },
     ],
-    tech: ['JavaScript', 'HTML & CSS', 'React'],
+    tech: ['JavaScript', 'HTML & SCSS', 'React', 'AEM', 'Webpack'],
   },
   {
     company: 'Isi Condal',
@@ -69,7 +69,7 @@ export const experience: Experience[] = [
           'Analysed client needs to install and adapt our B2B e-commerce platform, “i2i”.',
           'Built websites, web services and mobile apps (Android & iOS) to communicate with our products, and programmed new product modules.',
           'Created and delivered training courses for customers.',
-          'Managed domains, hosts, servers and databases (Plesk, Heroku, Amazon AWS).',
+          'Managed domains, hosts, servers and databases.',
         ],
       },
       {
