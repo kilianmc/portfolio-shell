@@ -15,12 +15,16 @@ import { useEffect, useRef } from 'react';
 //   const { dialogRef, initialFocusRef } =
 //     useOverlayA11y<HTMLDivElement, HTMLButtonElement>(onClose);
 //
-// NOTE — cross-origin iframe limitation: once focus enters a cross-origin
-// <iframe> (e.g. the embedded photography portfolio at artlaia.pages.dev), the
-// same-origin policy forbids the parent document from reading or moving focus
-// inside it. So this trap can only govern the overlay's OWN chrome (back
-// button, standalone link, etc.); it cannot pull focus back out of the iframe.
-// Escape-to-close still works whenever focus is on that chrome.
+// NOTE — embedded <iframe> is intentionally excluded from the trap: the
+// focusable selector below deliberately omits `iframe`, so Tab cycles only the
+// overlay's OWN chrome (back button, standalone link) and never steps into an
+// embedded cross-origin app (e.g. the photography portfolio at
+// artlaia.pages.dev). This is a deliberate trade-off: a cross-origin iframe
+// can't be focus-managed by the parent (same-origin policy forbids reading or
+// moving focus inside it), so trapping into it would strand keyboard focus with
+// no reliable way back to the chrome or to fire Escape. Keyboard users enter
+// the embedded app by clicking it or via the "open standalone" link instead;
+// Escape-to-close always works while focus is on the chrome.
 export function useOverlayA11y<
   D extends HTMLElement = HTMLDivElement,
   F extends HTMLElement = HTMLElement,
