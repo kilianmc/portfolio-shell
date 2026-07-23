@@ -59,7 +59,7 @@ export default function ProjectViewer({
             className="viewer__iframe"
             src={project.embedUrl}
             title={project.title}
-            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             allow="fullscreen"
           />
