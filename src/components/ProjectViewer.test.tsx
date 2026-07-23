@@ -8,6 +8,14 @@ import userEvent from '@testing-library/user-event';
 // stub component — no network is touched. The stub renders identifiable
 // content asserted below.
 import ProjectViewer from './ProjectViewer';
+import { projects } from '../data/projects';
+
+// Titles are editorial copy — derive them from the data so wording tweaks
+// don't break these tests (the overlay title/aria-label come from the data).
+const fundTitle = projects.find((p) => p.id === 'fund-dashboard')!.title;
+const photoTitle = projects.find(
+  (p) => p.id === 'photography-portfolio',
+)!.title;
 
 describe('ProjectViewer (remote resolves)', () => {
   it('returns null for an unknown project id', () => {
@@ -44,16 +52,11 @@ describe('ProjectViewer (remote resolves)', () => {
   it('renders the chrome (title, badge, standalone link) around the remote', () => {
     render(<ProjectViewer projectId="fund-dashboard" onClose={() => {}} />);
 
-    expect(
-      screen.getByRole('dialog', { name: 'Fund Portfolio Dashboard' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: fundTitle })).toBeInTheDocument();
     expect(screen.getByText('remote · Module Federation')).toBeInTheDocument();
     // The overlay title truncates (single-line ellipsis) so the full text must
     // stay accessible via a `title` attribute on the title element.
-    expect(screen.getByText('Fund Portfolio Dashboard')).toHaveAttribute(
-      'title',
-      'Fund Portfolio Dashboard',
-    );
+    expect(screen.getByText(fundTitle)).toHaveAttribute('title', fundTitle);
     const ext = screen.getByRole('link', { name: /Open standalone/ });
     expect(ext).toHaveAttribute(
       'href',
@@ -69,12 +72,12 @@ describe('ProjectViewer (embedded iframe project)', () => {
     );
 
     const dialog = screen.getByRole('dialog', {
-      name: 'Photography Portfolio',
+      name: photoTitle,
     });
     const iframe = dialog.querySelector('iframe');
     expect(iframe).not.toBeNull();
     expect(iframe).toHaveAttribute('src', 'https://artlaia.pages.dev');
-    expect(iframe).toHaveAttribute('title', 'Photography Portfolio');
+    expect(iframe).toHaveAttribute('title', photoTitle);
 
     // The iframe path uses no federated remote loading chrome.
     expect(screen.queryByText(/Fetching remoteEntry.js/)).toBeNull();

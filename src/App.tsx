@@ -92,8 +92,8 @@ export default function App() {
                   <h3 className="contact__title">Get in touch</h3>
                   <p className="contact__text">
                     I&rsquo;m always happy to talk about frontend architecture,
-                    microfrontends, or interesting product work. The fastest way
-                    to reach me is LinkedIn.
+                    web ideas, or interesting nerdy stuff. The fastest way to
+                    reach me is LinkedIn.
                   </p>
                   <a
                     className="btn btn--primary"
@@ -107,9 +107,7 @@ export default function App() {
               </section>
 
               <footer className="footer">
-                <p>
-                  Built by Kilian Mateo — React, Vite &amp; Deployed on Vercel.
-                </p>
+                <p>Built by Kilian Mateo.</p>
               </footer>
             </main>
           </div>

@@ -52,12 +52,12 @@ const realProjects: (RemoteProject | EmbeddedProject)[] = [
     id: 'fund-dashboard',
     kind: 'remote',
     number: '01',
-    title: 'Fund Portfolio Dashboard',
+    title: 'Funds Portfolio Dashboard',
     tagline:
-      'A responsive fund analytics dashboard, loaded here as a microfrontend.',
+      'A responsive funds analytics dashboard, loaded here as a microfrontend.',
     description:
-      'Built from a single-file prototype into a component-based React app: an indexed performance chart with a benchmark and time-range toggle, headline KPIs, a scrollable holdings table, and an allocation donut. Runtime light/dark theming. It runs standalone and is exposed as a Module Federation remote — the panel below is that remote loaded live into this portfolio.',
-    tech: ['React', 'Vite', 'Chart.js', 'SCSS', 'Module Federation'],
+      'Built from a prototype into a component-based React app: it shows an indexed performance chart with a benchmark and time-range toggle, some headline KPIs, a scrollable holdings table, and an allocation donut. It runs standalone and is exposed as a Module Federation remote.',
+    tech: ['React', 'Vite', 'Chart.js', 'SCSS'],
     liveUrl: 'https://ai-portfolio-project1.vercel.app',
     repoUrl: 'https://github.com/kilianmc/fund-dashboard',
     // Federated import — resolved by @module-federation/vite at runtime.
@@ -69,16 +69,10 @@ const realProjects: (RemoteProject | EmbeddedProject)[] = [
     number: '02',
     title: 'Photography Portfolio',
     tagline:
-      'A museum-quality photography portfolio — an independently built Astro site, loaded here inside the portfolio via iframe integration.',
+      'A quality photography portfolio — an independently built Astro site, loaded here via iframe integration.',
     description:
-      "A warm, content-driven photography portfolio built with Astro (static output), Tailwind v4, and Markdown content collections, with a git-based CMS so the artist self-serves and multilingual UI chrome. Deployed on Cloudflare Pages. Unlike the fund dashboard's Module Federation remote, this is a fully independent app of a different stack — composed into the portfolio via iframe integration, the framework-agnostic microfrontend pattern.",
-    tech: [
-      'Astro',
-      'TypeScript',
-      'Tailwind CSS',
-      'Cloudflare Pages',
-      'iframe integration',
-    ],
+      'A warm, content-driven photography portfolio built with Astro, Tailwind and Markdown content collections. Has an integrated headless CMS so the artist can manage its content. This is a fully independent app of a different stack — composed into the portfolio via a framework-agnostic microfrontend pattern.',
+    tech: ['Astro', 'TypeScript', 'Tailwind CSS', 'Sveltia CMS'],
     embedUrl: 'https://artlaia.pages.dev',
     liveUrl: 'https://artlaia.pages.dev',
     repoUrl: 'https://github.com/kilianmc/photography-portfolio',
