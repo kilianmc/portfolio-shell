@@ -1,12 +1,15 @@
 import { Suspense } from 'react';
 import { projects, lazyProjectComponents } from '../data/projects';
+import { useOverlayA11y } from '../hooks/useOverlayA11y';
 import ErrorBoundary from './ErrorBoundary';
 import './ProjectViewer.scss';
 
 // Full-viewport overlay that mounts a showcase project inside the shell. It
 // supports the two integration patterns: a Module Federation remote (loaded
 // lazily via React.lazy, so the shell's initial load never pays for remote
-// code) and an embedded independent app (loaded in an <iframe>).
+// code) and an embedded independent app (loaded in an <iframe>). Modal-dialog
+// a11y (Esc to close, focus trap, focus restore) comes from useOverlayA11y and
+// applies to both paths — see that hook for the cross-origin iframe caveat.
 interface ProjectViewerProps {
   projectId: string;
   onClose: () => void;
@@ -16,6 +19,12 @@ export default function ProjectViewer({
   projectId,
   onClose,
 }: ProjectViewerProps) {
+  // Hooks must run unconditionally, so call this before the early return below.
+  const { dialogRef, initialFocusRef } = useOverlayA11y<
+    HTMLDivElement,
+    HTMLButtonElement
+  >(onClose);
+
   const project = projects.find((p) => p.id === projectId);
   // Only real projects are ever launched (placeholder cards have no launch
   // button); bail out for an unknown or placeholder id.
@@ -30,9 +39,15 @@ export default function ProjectViewer({
       role="dialog"
       aria-modal="true"
       aria-label={project.title}
+      ref={dialogRef}
     >
       <div className="viewer__bar">
-        <button type="button" className="viewer__back" onClick={onClose}>
+        <button
+          type="button"
+          className="viewer__back"
+          onClick={onClose}
+          ref={initialFocusRef}
+        >
           ← Back to portfolio
         </button>
         <span className="viewer__title">
