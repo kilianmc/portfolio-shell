@@ -59,6 +59,21 @@
   font-weight: 600;
   font-size: 0.95rem;
   color: $sh-text;
+  // Let the title shrink within the flex bar so a long project title
+  // truncates (below) instead of overflowing / pushing the standalone link.
+  min-width: 0;
+}
+
+/*
+ * Compact single-line overlay header: a long project title is clipped with an
+ * ellipsis rather than wrapping the bar. Full text stays accessible via the
+ * `title` attribute (tooltip) and the dialog's `aria-label` (screen readers).
+ */
+.viewer__title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .viewer__badge {
@@ -70,6 +85,9 @@
   background: $sh-accent-soft;
   padding: 0.2rem 0.55rem;
   border-radius: $radius-pill;
+  // Keep the badge intact on one line; the title text absorbs any shrink.
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .viewer__ext {
@@ -92,6 +110,18 @@
   flex: 1;
   overflow: auto;
   position: relative;
+  background: var(--bg, #0d1017);
+}
+
+/*
+ * Embedded (iframe) projects fill the frame body edge to edge. The independent
+ * app renders on its own backdrop, fully isolated from the shell.
+ */
+.viewer__iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
   background: var(--bg, #0d1017);
 }
 

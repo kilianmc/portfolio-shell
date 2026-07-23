@@ -62,60 +62,68 @@ export default function App() {
 
   return (
     <>
-      <div className="layout">
-        <div className="layout__inner">
-          <Sidebar
-            activeSection={activeSection}
-            onNavigate={handleNavigate}
-            onOpenJournal={() => setJournalOpen(true)}
-            journalActive={journalOpen}
-          />
+      {/*
+       * Everything inside `.shell` inherits the shell's typography. The remote
+       * viewer is deliberately rendered OUTSIDE `.shell` (below) so it inherits
+       * only from the typography-neutral <body> and its own base styles govern —
+       * see the `.shell` note in index.scss.
+       */}
+      <div className="shell">
+        <div className="layout">
+          <div className="layout__inner">
+            <Sidebar
+              activeSection={activeSection}
+              onNavigate={handleNavigate}
+              onOpenJournal={() => setJournalOpen(true)}
+              journalActive={journalOpen}
+            />
 
-          <main className="content" id="content">
-            <About onOpenJournal={() => setJournalOpen(true)} />
-            <Experience />
-            <Projects onLaunch={setOpenProject} />
+            <main className="content" id="content">
+              <About onOpenJournal={() => setJournalOpen(true)} />
+              <Experience />
+              <Projects onLaunch={setOpenProject} />
 
-            <section id="contact" className="section" aria-label="Contact">
-              <h2 className="section__heading section__heading--mobile">
-                <span className="section__num">04.</span> Contact
-              </h2>
-              <div className="contact">
-                <p className="contact__eyebrow">What&rsquo;s next</p>
-                <h3 className="contact__title">Get in touch</h3>
-                <p className="contact__text">
-                  I&rsquo;m always happy to talk about frontend architecture,
-                  microfrontends, or interesting product work. The fastest way
-                  to reach me is LinkedIn.
-                </p>
-                <a
-                  className="btn btn--primary"
-                  href="https://www.linkedin.com/in/kilian-mateo-136449157/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <LinkedInIcon /> Connect on LinkedIn
-                </a>
-              </div>
-            </section>
+              <section id="contact" className="section" aria-label="Contact">
+                <h2 className="section__heading section__heading--mobile">
+                  <span className="section__num">04.</span> Contact
+                </h2>
+                <div className="contact">
+                  <p className="contact__eyebrow">What&rsquo;s next</p>
+                  <h3 className="contact__title">Get in touch</h3>
+                  <p className="contact__text">
+                    I&rsquo;m always happy to talk about frontend architecture,
+                    web ideas, or interesting nerdy stuff. The fastest way to
+                    reach me is LinkedIn.
+                  </p>
+                  <a
+                    className="btn btn--primary"
+                    href="https://www.linkedin.com/in/kilian-mateo-136449157/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <LinkedInIcon /> Connect on LinkedIn
+                  </a>
+                </div>
+              </section>
 
-            <footer className="footer">
-              <p>
-                Built by Kilian Mateo — React, Vite &amp; Deployed on Vercel.
-              </p>
-            </footer>
-          </main>
+              <footer className="footer">
+                <p>Built by Kilian Mateo.</p>
+              </footer>
+            </main>
+          </div>
+
+          {journalOpen && (
+            <JournalViewer onClose={() => setJournalOpen(false)} />
+          )}
         </div>
-
-        {openProject && (
-          <ProjectViewer
-            projectId={openProject}
-            onClose={() => setOpenProject(null)}
-          />
-        )}
-
-        {journalOpen && <JournalViewer onClose={() => setJournalOpen(false)} />}
       </div>
+
+      {openProject && (
+        <ProjectViewer
+          projectId={openProject}
+          onClose={() => setOpenProject(null)}
+        />
+      )}
 
       <Analytics />
     </>

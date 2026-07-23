@@ -2,7 +2,7 @@
 
 A behind-the-scenes log of how this portfolio was built.
 
-It is two complementary projects, each demonstrating a different way of working
+It started as two complementary projects, each demonstrating a different way of working
 with AI:
 
 - **AI-as-Copilot** — the [Fund Portfolio Dashboard](https://ai-portfolio-project1.vercel.app):
@@ -12,7 +12,7 @@ with AI:
   each ticket as a pull request that I test and merge.
 
 The sessions below track that work in order — from the first dashboard mockup to
-the microfrontend architecture, CI, and dev→prod deployment.
+the microfrontend architecture, CI, dev→prod deployment, etc.
 
 ---
 
@@ -48,17 +48,7 @@ it styles.
 - Responsive `@media` rules were distributed to the component they target; global layout
   breakpoints (`.app`, `.grid`, `.card`) stayed in `index.css`.
 
-#### Step 1.3 — Create component CSS files
-
-Created:
-
-- `src/components/TopBar.css`
-- `src/components/PerformanceCard.css`
-- `src/components/OverviewCard.css`
-- `src/components/HoldingsCard.css`
-- `src/components/AllocationCard.css`
-
-#### Step 1.4 — Wire up imports
+#### Step 1.3 — Create component CSS files & Wire up imports
 
 - Trimmed `index.css` down to global/shared styles only.
 - Added `import './<Component>.css'` to each component `.jsx`.
@@ -93,12 +83,7 @@ Goal: convert the stylesheets to SCSS and centralize shared values/patterns.
 
 - Switched all `import './x.css'` → `import './x.scss'` (incl. `main.jsx`).
 - Deleted the six old `.css` files.
-
-#### Step 2.5 — Verify & polish
-
 - `npm run build` succeeded; output CSS identical in intent.
-- Added `css.preprocessorOptions.scss.api = 'modern-compiler'` to `vite.config.js`
-  (forward-compatible; only takes effect on Vite 5+).
 
 ---
 
@@ -137,14 +122,7 @@ Goal: add a dark theme and a button in the topbar to switch between light and da
 - `PerformanceCard.jsx`: gridline color now varies by theme via `makeOptions(theme)`.
 - `AllocationCard.jsx`: donut segment borders match the card background via `makeData(theme)`.
 - Brand accent colors (blue/green/red) brightened slightly in dark mode for contrast.
-
-#### Step 3.6 — Verify
-
 - `npm run build` succeeded (49 modules).
-- Dev server booted cleanly on Vite 4.
-- **Known cosmetic issue:** Sass `legacy-js-api` deprecation warnings still print because
-  Vite 4 uses Sass's legacy JS API; the `modern-compiler` option only applies on Vite 5+.
-  Build output is correct.
 
 ---
 
@@ -176,8 +154,6 @@ src/
 
 Updated node to v23 , updated vite & the pluguin for react.
 
-The Sass legacy-js-api warning flood is gone (Vite 8 now honors api: 'modern-compiler'), and the build is faster and smaller.
-
 ### Task 5
 
 switch hover of darkmode button to show border instead of moving it.
@@ -191,61 +167,35 @@ an equity/income asset mix, richer KPIs, and a cleaner holdings/allocation layou
 
 Goal: signal that rows are hidden below the fold and the table scrolls.
 
-- Wrapped `.table-scroll` in a positioned `.table-wrap` (`HoldingsCard.jsx`).
-- Added a `::after` bottom fade gradient (`transparent → $card`, `pointer-events: none`)
-  so the last visible rows fade into the card — CSS-only, no JS scroll listener.
-
 ### Task 2 — Allocation legend: more space + matching fade
 
 Goal: give the donut legend more room and the same scroll cue as Holdings.
-
-- Raised legend `max-height` 240 → 300px so ~6–7 of the 10 funds show before scrolling.
-- Wrapped `.donut-legend` in `.legend-wrap` with the same `::after` fade.
-- **Bug fix:** initial `align-self: stretch` made the wrapper taller than the legend
-  (the layout fills the card height), pushing `bottom: 0` into empty space so the fade
-  was invisible. Removed it — the wrapper now hugs the legend and the fade lands correctly.
 
 ### Task 3 — Equity vs. income asset mix
 
 Goal: show what share of the portfolio is equity vs. income.
 
-- Added a `type: 'equity' | 'income'` field to every fund in `data/portfolio.js`, plus
-  derived `EQUITY_PCT` / `INCOME_PCT` (summed from allocations).
-- Built a labeled stacked split bar (blue = equity, green = income).
-- First placed it under the Overview KPIs, then **moved it to the bottom of the
-  Allocation card** (with a `border-top` divider) at the card's request.
-
 ### Task 4 — Yearly return on the Total Portfolio Value KPI
 
 Goal: mirror Today's Return (value + chip) on the total-value tile.
 
-- Added `YTD_RETURN_PCT` (14.8), rebuilt `YTD_RETURN` from it, and derived `YTD_GAIN`
-  (euro gain implied by growing the value from its start-of-year base).
-- Rendered a green chip: `▲ +€54,894 · +14.8% YTD`.
-
-### Task 5 — Type column in the Holdings table
+### Task 5 & 6 — Type column in the Holdings table & Type indicator in the donut legend
 
 - Added a **Type** column (2nd) with a rounded pill badge — "Equity" (blue dot) /
   "Income" (green dot), matching the asset-mix colors.
-- Widened table `min-width` 440 → 520px for the extra column.
-
-### Task 6 — Type indicator in the donut legend
-
 - Added a small square marker per legend row (blue = equity, green = income), **no text**,
   with a `title` tooltip for accessibility.
 
 ### Task 7 — Percentages on donut segments
 
 - Wrote an inline Chart.js plugin `arcLabels` that draws each fund's allocation % centered
-  on its arc (via `arc.getCenterPoint()`) — no new dependency; registered via the `plugins` prop.
-- Removed the `%` from the hover tooltip (now shows just the fund name).
+  on its arc.
 - Labels on slices `< 5%` are hidden to avoid crowding the thin arcs.
 
 ### Task 8 — Removed allocation bars from Holdings
 
 - Dropped the `.alloc-track` / `.alloc-fill` micro-bar; the Allocation column now shows the
   plain `%` value. Deleted the now-unused `.alloc-bar/.alloc-track/.alloc-fill` styles.
-- Centered the **Type** and **Allocation** columns (header + cells).
 
 ### Task 9 — Overview KPI refresh
 
@@ -258,8 +208,6 @@ Goal: mirror Today's Return (value + chip) on the total-value tile.
 ### Task 10 — Dividend yield data
 
 - Added a `yield` field to each fund to back the income projection.
-- Set equity yields to the 6–9% range (income funds left at ~2.7–3.6%), lifting
-  Est. Annual Income to ≈ €26,700.
 
 ## Session 4
 
@@ -267,12 +215,8 @@ Goal: mirror Today's Return (value + chip) on the total-value tile.
 
 ![Fund portfolio dashboard demo](/journal/demo.gif)
 
-- Captured a scripted tour of the running app (`http://localhost:5173/`) and encoded it
-  as an animated GIF via Playwright (`channel: 'chrome'`, so no browser download), screenshots each state, and encodes the frames with the pure-JS `pngjs` (decode) + `gifenc` (quantize/encode) libraries.
-- The tour, at a 1440px desktop viewport (real 2-column layout) with full-page screenshots:
-  1. landing view, 2. cycle the Performance range toggle (12M / 3Y / 5Y / All),
-  2. switch to dark mode, 4. ranges in dark mode, 5. back to light,
-  3. **scroll the Holdings table** through all 10 funds and back (sticky header stays pinned).
+- Captured a scripted tour of the running app and encoded it
+  as an animated GIF via Playwright, screenshots each state.
 - Embedded in the [README](README.md#demo) and here.
 
 ## Session 5 — Phase 2: AI-as-Agent foundation
@@ -303,10 +247,7 @@ session set up the shared engineering bar across **both** repos
 ### Task 1 — Two-branch dev→prod model (both repos)
 
 - Introduced long-lived **`dev`** (integration) and **`main`** (production)
-  branches. Feature PRs target `dev`; `main` only ever receives `dev`→`main`
-  promotion PRs that Kilian merges after testing the dev deploy.
-- Extended the branch rulesets to **`dev`** as well, so both branches gate on a
-  PR + green `lint-build`.
+  branches.
 - Configured **per-environment Vercel deploys**: `dev` auto-deploys to a stable
   dev URL, `main` deploys to production; feature branches get preview deploys.
 - Wired the **Module Federation remote per-environment** — the shell host reads
@@ -320,9 +261,9 @@ session set up the shared engineering bar across **both** repos
   the minor (`npm run version:release`). Dev carries the in-progress minors;
   production carries whole majors.
 
-### Task 3 — Vercel reality check (the messy part)
+### Task 3 — Vercel reality check
 
-Wiring the flow surfaced two real infra gotchas the agent had to diagnose live:
+Wiring the flow surfaced two real infra gotchas:
 
 - The **`fund-dashboard` Vercel project had lost its Git connection**, so it had
   silently stopped deploying — every push since was ignored. Reconnecting it (and
@@ -349,9 +290,6 @@ between the two projects.
 ### SR2 — Shell → TypeScript (strict)
 
 - Migrated the whole shell to **TypeScript with `strict: true`**
-  (`tsc --noEmit` enforced in CI). Component props, data models, and event/ref
-  handlers are typed; the federated remote is typed locally via
-  `src/types/remotes.d.ts` (the remote ships no federated types — `dts: false`).
 - **`fund-dashboard` intentionally stays plain JS** — it is the fast/simple
   copilot-style project, so the two repos form a deliberate contrast in
   engineering approach (typed, rigorous host vs. quick JS remote).
@@ -368,3 +306,17 @@ dashboard loaded as a remote and this journal reachable from the nav:
 
 > This journal now lives in `portfolio-shell` and is rendered on the site under
 > **Dev Journal**. It keeps being updated as the portfolio evolves.
+
+## Session 8 — Project 2: the Photography Portfolio (iframe integration)
+
+The new project — the
+[**Photography Portfolio**](https://artlaia.pages.dev), an independently built
+**Astro** static site (Tailwind) — is a fully
+independent app of a **different stack**. It is not a React remote, so it can't
+be federated.
+
+Instead it is composed into the shell via **iframe integration**.
+
+The shell now demonstrates **both** microfrontend composition patterns
+side by side: shared-runtime Module Federation for the React fund dashboard, and
+fully isolated iframe integration for the Astro photography portfolio.

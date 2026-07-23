@@ -18,7 +18,7 @@ export default function About({ onOpenJournal }: AboutProps) {
           are reliable, fast, and genuinely pleasant to use.
         </p>
         <p>
-          This site is a <em>Microfrontend</em> shell that loads each showcase
+          This site is a <em>Microfrontend</em> shell that loads each showcased
           project as a separate, independently deployed application at runtime.
           For the full story of how it&rsquo;s built — the architecture and the
           AI-collaboration process behind it — see the{' '}
@@ -34,7 +34,7 @@ export default function About({ onOpenJournal }: AboutProps) {
           <li>Vite & Webpack</li>
           <li>Python, Java, C#</li>
           <li>HTML &amp; SCSS</li>
-          <li>AWS & Cloudfare W.</li>
+          <li>AWS & Cloudflare</li>
           <li className="skills__wide">
             Agentic Development & Prompt Engineering
           </li>
