@@ -5,13 +5,25 @@ Guidance for AI agents (and humans) working in this repo. Read it before opening
 ## Overview
 
 This repo is **`portfolio-shell`**, the landing site at **kilianmc.com** and the
-**Module Federation _host_** for a microfrontend portfolio. It renders the
-personal site (about, experience, projects, contact) and loads each showcase
-project as an independently deployed **Module Federation remote** at runtime.
+**host** for a microfrontend portfolio. It renders the personal site (about,
+experience, projects, contact) and composes each showcase project — each an
+independently built and deployed app — into the shell at runtime.
 
-Today it consumes one remote — the **`fundDashboard`** remote (the
-[`fund-dashboard`](https://github.com/kilianmc/fund-dashboard) repo) — mounted
-on demand inside `ProjectViewer`.
+The shell composes projects via **two integration patterns**:
+
+- **Module Federation** — shared-runtime React remotes, mounted on demand inside
+  `ProjectViewer` via `React.lazy`. Today it consumes one remote, the
+  **`fundDashboard`** remote (the
+  [`fund-dashboard`](https://github.com/kilianmc/fund-dashboard) repo).
+- **iframe integration** — the framework-agnostic microfrontend pattern: a fully
+  independent, fully isolated app of _any_ stack, composed into the shell inside
+  an `<iframe>`. Today this is the **photography-portfolio** — an Astro static
+  site (Tailwind v4, Cloudflare Pages, live at
+  [artlaia.pages.dev](https://artlaia.pages.dev)) — which is not a React MF
+  remote and so is embedded rather than federated.
+
+Both open in the same `ProjectViewer` overlay; the data model discriminates the
+two (plus HTML-only example cards) via a `kind` field in `src/data/projects.ts`.
 
 This repo runs an **AI-as-Agent** development loop: issues are implemented by
 agents that open focused PRs. Keep changes small and reviewable.
@@ -59,20 +71,40 @@ src/
     Sidebar.tsx       # left nav / section links
     About.tsx         # about section
     Experience.tsx    # experience section (data-driven)
-    Projects.tsx      # project cards; launches the remote viewer
-    ProjectViewer.tsx # full-viewport overlay that mounts a remote (React.lazy)
+    Projects.tsx      # project cards; launches the viewer (remote or iframe)
+    ProjectViewer.tsx # full-viewport overlay: mounts a remote (React.lazy) OR an <iframe>
     ErrorBoundary.tsx # guards the shell if a remote fails to load
     icons.tsx         # inline SVG icon components
     *.scss            # per-component styles
   data/
-    projects.ts       # project metadata + types + federated `load()` + lazy components
+    projects.ts       # project metadata + `kind`-discriminated types (remote | embedded | placeholder) + federated `load()` + lazy components
     experience.ts     # experience entries + `Experience`/`Role` types
 ```
 
+## Integration patterns — how projects are composed
+
+The shell composes projects two ways, discriminated by the `kind` field on each
+entry in `src/data/projects.ts`:
+
+- **`kind: 'remote'`** — a Module Federation remote (shared-runtime React),
+  loaded via `load()` (a dynamic `import()` wrapped in `React.lazy`) and rendered
+  inside `ProjectViewer` behind `<Suspense>` + `<ErrorBoundary>`. Governed by the
+  MF host contract below.
+- **`kind: 'embedded'`** — a fully independent app of _any_ stack (e.g. the Astro
+  photography-portfolio), composed via an `<iframe src={embedUrl}>` in
+  `ProjectViewer`. It is fully isolated: no shared runtime, no federation, no env
+  var — `embedUrl` is a constant in `projects.ts`. This is the framework-agnostic
+  microfrontend pattern.
+- **`kind: 'placeholder'`** — an HTML-only example card (layout preview only),
+  hidden in production behind `VITE_SHOW_EXAMPLE_PROJECTS`.
+
+Only `remote` projects get a `React.lazy` entry in `lazyProjectComponents`;
+`embedded` and `placeholder` have no `load` and are excluded.
+
 ## Module Federation host contract — do not break remote loading
 
-The shell is a **host**. Its job is to load remotes reliably. Treat the
-following as a contract:
+The shell is a **host**. For federated (`kind: 'remote'`) projects, its job is to
+load remotes reliably. Treat the following as a contract:
 
 - **Remotes are configured in `vite.config.ts`.** The `fundDashboard` remote's
   entry URL comes from **`VITE_FUND_REMOTE_URL`** (set per-environment in

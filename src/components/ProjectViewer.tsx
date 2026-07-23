@@ -3,9 +3,10 @@ import { projects, lazyProjectComponents } from '../data/projects';
 import ErrorBoundary from './ErrorBoundary';
 import './ProjectViewer.scss';
 
-// Full-viewport overlay that mounts a showcase project's federated remote.
-// The remote is only imported when the viewer opens (React.lazy), so the
-// shell's initial load never pays for remote code.
+// Full-viewport overlay that mounts a showcase project inside the shell. It
+// supports the two integration patterns: a Module Federation remote (loaded
+// lazily via React.lazy, so the shell's initial load never pays for remote
+// code) and an embedded independent app (loaded in an <iframe>).
 interface ProjectViewerProps {
   projectId: string;
   onClose: () => void;
@@ -16,10 +17,11 @@ export default function ProjectViewer({
   onClose,
 }: ProjectViewerProps) {
   const project = projects.find((p) => p.id === projectId);
-  // Only real remote-backed projects are ever launched (placeholder cards have
-  // no launch button); bail out for an unknown or placeholder id.
-  if (!project || project.placeholder) return null;
+  // Only real projects are ever launched (placeholder cards have no launch
+  // button); bail out for an unknown or placeholder id.
+  if (!project || project.kind === 'placeholder') return null;
 
+  const isEmbedded = project.kind === 'embedded';
   const RemoteApp = lazyProjectComponents[projectId];
 
   return (
@@ -35,7 +37,11 @@ export default function ProjectViewer({
         </button>
         <span className="viewer__title">
           {project.title}
-          <span className="viewer__badge">remote · Module Federation</span>
+          <span className="viewer__badge">
+            {isEmbedded
+              ? 'iframe · framework-agnostic'
+              : 'remote · Module Federation'}
+          </span>
         </span>
         <a
           className="viewer__ext"
@@ -48,11 +54,22 @@ export default function ProjectViewer({
       </div>
 
       <div className="viewer__frame">
-        <ErrorBoundary fallbackUrl={project.liveUrl}>
-          <Suspense fallback={<RemoteLoading title={project.title} />}>
-            <RemoteApp />
-          </Suspense>
-        </ErrorBoundary>
+        {isEmbedded ? (
+          <iframe
+            className="viewer__iframe"
+            src={project.embedUrl}
+            title={project.title}
+            referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            allow="fullscreen"
+          />
+        ) : (
+          <ErrorBoundary fallbackUrl={project.liveUrl}>
+            <Suspense fallback={<RemoteLoading title={project.title} />}>
+              <RemoteApp />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </div>
     </div>
   );

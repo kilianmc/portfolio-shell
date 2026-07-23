@@ -53,3 +53,33 @@ describe('ProjectViewer (remote resolves)', () => {
     );
   });
 });
+
+describe('ProjectViewer (embedded iframe project)', () => {
+  it('renders an <iframe> at the embed URL instead of the federated remote', () => {
+    render(
+      <ProjectViewer projectId="photography-portfolio" onClose={() => {}} />,
+    );
+
+    const dialog = screen.getByRole('dialog', {
+      name: 'Photography Portfolio',
+    });
+    const iframe = dialog.querySelector('iframe');
+    expect(iframe).not.toBeNull();
+    expect(iframe).toHaveAttribute('src', 'https://artlaia.pages.dev');
+    expect(iframe).toHaveAttribute('title', 'Photography Portfolio');
+
+    // The iframe path uses no federated remote loading chrome.
+    expect(screen.queryByText(/Fetching remoteEntry.js/)).toBeNull();
+    expect(screen.queryByTestId('remote-app')).toBeNull();
+  });
+
+  it('shows the iframe-integration badge and a standalone link', () => {
+    render(
+      <ProjectViewer projectId="photography-portfolio" onClose={() => {}} />,
+    );
+
+    expect(screen.getByText('iframe · framework-agnostic')).toBeInTheDocument();
+    const ext = screen.getByRole('link', { name: /Open standalone/ });
+    expect(ext).toHaveAttribute('href', 'https://artlaia.pages.dev');
+  });
+});

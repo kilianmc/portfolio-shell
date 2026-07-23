@@ -368,3 +368,27 @@ dashboard loaded as a remote and this journal reachable from the nav:
 
 > This journal now lives in `portfolio-shell` and is rendered on the site under
 > **Dev Journal**. It keeps being updated as the portfolio evolves.
+
+## Session 8 — Project 2: the Photography Portfolio (iframe integration)
+
+The portfolio gained a **second showcase project** — and, with it, a second way
+to compose a project into the shell.
+
+### Task 1 — A third integration type: `EmbeddedProject`
+
+Until now every showcase project was a **Module Federation remote**: a
+shared-runtime React app loaded via `React.lazy`. The new project — the
+[**Photography Portfolio**](https://artlaia.pages.dev), an independently built
+**Astro** static site (Tailwind v4, Markdown content collections, a git-based
+CMS, multilingual UI chrome, deployed on Cloudflare Pages) — is a fully
+independent app of a **different stack**. It is not a React remote, so it can't
+be federated.
+
+Instead it is composed into the shell via **iframe integration** — the
+framework-agnostic microfrontend pattern: a fully isolated app loaded inside an
+`<iframe>` in the same `ProjectViewer` overlay. No shared runtime, no
+`remoteEntry.js`, no env var — the `embedUrl` is a constant.
+
+The shell now demonstrates **both** microfrontend composition patterns
+side by side: shared-runtime Module Federation for the React fund dashboard, and
+fully isolated iframe integration for the Astro photography portfolio.
