@@ -320,3 +320,15 @@ Instead it is composed into the shell via **iframe integration**.
 The shell now demonstrates **both** microfrontend composition patterns
 side by side: shared-runtime Module Federation for the React fund dashboard, and
 fully isolated iframe integration for the Astro photography portfolio.
+
+## Session 9 — Project upgrade: load-your-own holdings + live NAV
+
+The fund dashboard gained its first real data feature — import a portfolio and
+value it against live market prices — turning it from a static showcase into a
+working tool.
+
+### Live NAV via a serverless proxy
+
+Added one **Vercel serverless function** `api/nav.js` in the dashboard repo that
+resolves ISIN→NAV **server-side** and keyless (Yahoo: search→chart), tolerant
+per ISIN (`Promise.allSettled` → `{ quotes, errors }`), with CORS + CDN cache.
