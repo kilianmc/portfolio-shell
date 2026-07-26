@@ -56,8 +56,8 @@ const realProjects: (RemoteProject | EmbeddedProject)[] = [
     tagline:
       'A responsive funds analytics dashboard, loaded here as a microfrontend.',
     description:
-      'Built from a prototype into a component-based React app: it shows an indexed performance chart with a benchmark and time-range toggle, some headline KPIs, a scrollable holdings table, and an allocation donut. It runs standalone and is exposed as a Module Federation remote.',
-    tech: ['React', 'Vite', 'Chart.js', 'SCSS'],
+      'Built from a prototype into a component-based React app: an indexed performance chart with a benchmark and time-range toggle, headline KPIs, a holdings table, and an allocation donut. You can load your own portfolio from a JSON or CSV file (fund ISIN, shares, cost basis) and it values it against live fund NAV — fetched through a small serverless proxy — to compute market value and gain/loss. It runs standalone and is exposed as a Module Federation remote.',
+    tech: ['React', 'Vite', 'Chart.js', 'SCSS', 'Serverless'],
     liveUrl: 'https://ai-portfolio-project1.vercel.app',
     repoUrl: 'https://github.com/kilianmc/fund-dashboard',
     // Federated import — resolved by @module-federation/vite at runtime.
