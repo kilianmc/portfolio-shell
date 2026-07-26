@@ -321,52 +321,14 @@ The shell now demonstrates **both** microfrontend composition patterns
 side by side: shared-runtime Module Federation for the React fund dashboard, and
 fully isolated iframe integration for the Astro photography portfolio.
 
-## Session 9 — Project 1 upgrade: load-your-own holdings + live NAV
+## Session 9 — Project upgrade: load-your-own holdings + live NAV
 
 The fund dashboard gained its first real data feature — import a portfolio and
 value it against live market prices — turning it from a static showcase into a
-working tool. It also surfaced a genuine architecture problem worth documenting.
+working tool.
 
-### Task 1 — Import holdings from a file (JSON/CSV)
+### Live NAV via a serverless proxy
 
-- Load `{ fund ISIN, shares, cost-basis price, optional type }` from a **JSON or
-  CSV** file. The built-in data stays the **default** until a file is imported,
-  with a "Reset to default". Parsing/validation lives in `parseHoldingsFile`
-  (key aliases, positive-number checks, a tiny hand-rolled CSV parser — no new
-  dependency).
-- State moved from static module imports to a `PortfolioDataContext` /
-  `usePortfolioData()` provider (mirroring `ThemeContext`), so the whole
-  dashboard recomputes from a single source. `portfolio.js` kept the default data
-  and gained **pure** `enrichFunds` / `deriveMetrics` so default and imported data
-  run identical math.
-
-### Task 2 — Live NAV via a serverless proxy
-
-- The holdings are Irish, EUR, daily-**NAV mutual funds** identified by **ISIN** —
-  and no free, browser-CORS source prices them (the one with open CORS paywalls
-  ISIN + fund coverage; everything else blocks the browser). So the "call an API"
-  requirement genuinely needed a backend.
-- Added one **Vercel serverless function** `api/nav.js` in the dashboard repo that
-  resolves ISIN→NAV **server-side** and keyless (Yahoo: search→chart), tolerant
-  per ISIN (`Promise.allSettled` → `{ quotes, errors }`), with CORS + CDN cache.
-  `navService` calls it; market value and gain/loss are computed from
-  `shares × live NAV` vs cost basis. Free on Vercel Hobby, and the Module
-  Federation contract is untouched (the function is additive).
-
-### Task 3 — Holdings & allocation redesign
-
-- Holdings columns are now **Fund · Shares · Cost · Actual · Value · Gain/Loss**
-  (Type/Allocation/YTD dropped; Gain/Loss stacks euros over percent). Allocation,
-  the equity/income asset mix, and the Overview KPIs all recompute from the live
-  data. Colours are assigned by position so funds never share one, and the asset
-  mix reads the fund `type` from the imported file.
-
-### Task 4 — Per-line errors + European number format
-
-- A fund that can't be priced shows **"Unavailable"** on its own row and is
-  excluded from totals/donut instead of failing the whole import. Money renders
-  in a compact **European** format (`42,5K €`, `1,23M €`); the Cost/Actual/Value
-  columns use whole numbers to give the table room to breathe.
-
-The dashboard card here in the shell now advertises the capability, and the
-description reflects the load-your-own-portfolio + live-NAV story.
+Added one **Vercel serverless function** `api/nav.js` in the dashboard repo that
+resolves ISIN→NAV **server-side** and keyless (Yahoo: search→chart), tolerant
+per ISIN (`Promise.allSettled` → `{ quotes, errors }`), with CORS + CDN cache.
