@@ -30,7 +30,7 @@ agents that open focused PRs. Keep changes small and reviewable.
 
 ## Stack
 
-- **React 18** (`^18.2.0`) — function components + hooks; one class component
+- **React 19** (`^19.2.8`) — function components + hooks; one class component
   (`ErrorBoundary`).
 - **TypeScript (strict)** — the whole shell is `.ts`/`.tsx` with
   `strict: true` (see `tsconfig.json`). Type-check with `npm run typecheck`
@@ -111,11 +111,20 @@ load remotes reliably. Treat the following as a contract:
   Vercel), defaulting to the production deployment so the app works out of the
   box. Do not hardcode a different URL or remove the env fallback.
 - **React and React-DOM are shared as singletons** (`singleton: true`,
-  `requiredVersion: '^18.2.0'`). Host and remote must run one React instance —
-  do not change React's major version or drop the singleton config without
-  coordinating with the remote.
-- **Keep `build.target: 'chrome89'`.** Module Federation relies on top-level
-  `await`; a lower target breaks remote loading. Do not lower it.
+  `requiredVersion: '^18.2.0 || ^19.0.0'`, explicit `strictVersion: false`).
+  Host and remote must run one React instance. The range is deliberately
+  tolerant during the Track 0 React 19 rollout and narrows to `^19.0.0` +
+  `strictVersion: true` once both repos are on 19 in production — because a
+  mismatch is only a console warning, after which MF silently hoists the highest
+  React into code compiled against the other version. Do not drop the singleton
+  config, and coordinate with the remote.
+- **Do not reintroduce a `build.target` pin.** Vite 8's default baseline already
+  supports the top-level `await` Module Federation needs, so pinning `chrome89`
+  only lowers the baseline; the old "MF needs a modern target" justification was
+  false.
+- **Keep `resolve.dedupe: ['react', 'react-dom']`.** `@vitejs/plugin-react` 6 no
+  longer adds it, and duplicate React under federation is the failure it
+  prevents.
 - **Lazy-load remotes.** Remote components are imported via `import('fundDashboard/App')`
   in `src/data/projects.ts`, wrapped in `React.lazy`, and rendered inside a
   `<Suspense>` + `<ErrorBoundary>` in `ProjectViewer`. Preserve this so the

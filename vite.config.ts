@@ -38,24 +38,36 @@ export default defineConfig(({ mode }) => {
           },
           // React is shared as a singleton so host + remote use one instance.
           shared: {
-            react: { singleton: true, requiredVersion: '^18.2.0' },
-            'react-dom': { singleton: true, requiredVersion: '^18.2.0' },
+            react: {
+              singleton: true,
+              requiredVersion: '^18.2.0 || ^19.0.0',
+              strictVersion: false,
+            },
+            'react-dom': {
+              singleton: true,
+              requiredVersion: '^18.2.0 || ^19.0.0',
+              strictVersion: false,
+            },
           },
         }),
     ].filter(Boolean),
-    // Without the federation plugin (tests), the bare `fundDashboard/App`
-    // specifier has nothing to resolve to and Vite's import analysis errors.
-    // Alias it to a local stub; the failure-path test overrides this with a
-    // throwing vi.mock to simulate an unreachable remote.
-    resolve: isTest
-      ? {
-          alias: {
-            'fundDashboard/App': fileURLToPath(
-              new URL('./src/test/remoteAppStub.tsx', import.meta.url),
-            ),
-          },
-        }
-      : undefined,
+    // `dedupe` keeps host and remote on one React copy under federation.
+    // Under tests the federation plugin is absent, so the bare
+    // `fundDashboard/App` specifier has nothing to resolve to and Vite's import
+    // analysis errors; alias it to a local stub, which the failure-path test
+    // overrides with a throwing vi.mock to simulate an unreachable remote.
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+      ...(isTest
+        ? {
+            alias: {
+              'fundDashboard/App': fileURLToPath(
+                new URL('./src/test/remoteAppStub.tsx', import.meta.url),
+              ),
+            },
+          }
+        : {}),
+    },
     // Ensure the automatic JSX runtime is used when compiling .tsx test files.
     esbuild: { jsx: 'automatic' },
     // Use Dart Sass's modern compiler (avoids the legacy JS API deprecation
@@ -67,10 +79,6 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         scss: {},
       },
-    },
-    // Module Federation relies on top-level await; needs a modern target.
-    build: {
-      target: 'chrome89',
     },
     server: {
       port: 5173,
