@@ -112,17 +112,37 @@ load remotes reliably. Treat the following as a contract:
   box. Do not hardcode a different URL or remove the env fallback.
 - **React and React-DOM are shared as singletons** (`singleton: true`,
   `requiredVersion: '^19.0.0'`, `strictVersion: true`). Host and remote must run
-  one React instance. Under `strictVersion: false` a mismatch was only a console
-  warning, after which MF silently hoisted the highest React into code compiled
-  against the other version, so failures surfaced later looking unrelated;
-  `strictVersion: true` throws at share resolution instead. **Enforcement is
-  asymmetric (verified by experiment 2026-08-17):** the shell's own share
-  resolution throws and the page dies, but a _remote_ whose `requiredVersion`
-  does not match gets its throw caught by `@module-federation/vite`, which logs
-  `Failed to bridge external shared module` and mounts anyway. A successful
-  render therefore does not prove the contract holds — the console is the signal.
-  Any new remote must be on React 19. Do not drop the singleton config, and
-  coordinate with the remote.
+  one React instance; any new remote must be on React 19. Do not drop the
+  singleton config, and coordinate with the remote — `strictVersion` is **inert
+  without `singleton: true`**, so a non-React share that omits the singleton flag
+  gets no version checking at all.
+- **Strict enforcement follows bootstrap order, not host vs. remote** (verified
+  by experiment 2026-08-17). The container that boots **first, with an empty
+  shared-module cache**, throws on a range it cannot satisfy, and that throw
+  rejects the entry wrapper so the real app entry is never imported — the page is
+  blank. Any container initialising **after** the cache is seeded only logs
+  `Failed to bridge external shared module`, once per shared key (**four
+  `console.error` lines**), and mounts anyway. The shell boots first in this
+  topology, so a range this repo's own installed React cannot satisfy takes
+  kilianmc.com down, whereas the same mistake in the fund only logs when
+  federated — while still blanking the fund's own standalone deployment. Those
+  four lines appear at **initial page load** during eager remote init, not when
+  the user opens the dashboard. A clean render proves nothing; the console is the
+  gate. Under `strictVersion: false` even the fatal case was only a warning,
+  after which MF silently hoisted the highest React into code compiled against
+  the other version.
+- **A caught bridge failure is not harmless.** It lands on one React today only
+  because the first container to boot seeds the page-global share cache and later
+  ones rebind to it. Under a different load order, or for a package the shell
+  does not share, the fallback is the container's own copy — a genuine second
+  React. The remote downloads and evaluates its own unused React chunk either
+  way.
+- **Bumping React across a major (or onto a canary) needs the range widened
+  first.** Installing a React version this repo's own strict range does not
+  admit is exactly the fatal case above, so the order is: widen
+  `requiredVersion` in both repos → upgrade both → re-narrow to the new major
+  with `strictVersion: true`. This is what the tolerant `'^18.2.0 || ^19.0.0'`
+  range existed for.
 - **Do not reintroduce a `build.target` pin.** Vite 8's default baseline already
   supports the top-level `await` Module Federation needs, so pinning `chrome89`
   only lowers the baseline; the old "MF needs a modern target" justification was
