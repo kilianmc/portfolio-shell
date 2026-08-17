@@ -111,13 +111,18 @@ load remotes reliably. Treat the following as a contract:
   Vercel), defaulting to the production deployment so the app works out of the
   box. Do not hardcode a different URL or remove the env fallback.
 - **React and React-DOM are shared as singletons** (`singleton: true`,
-  `requiredVersion: '^18.2.0 || ^19.0.0'`, explicit `strictVersion: false`).
-  Host and remote must run one React instance. The range is deliberately
-  tolerant during the Track 0 React 19 rollout and narrows to `^19.0.0` +
-  `strictVersion: true` once both repos are on 19 in production — because a
-  mismatch is only a console warning, after which MF silently hoists the highest
-  React into code compiled against the other version. Do not drop the singleton
-  config, and coordinate with the remote.
+  `requiredVersion: '^19.0.0'`, `strictVersion: true`). Host and remote must run
+  one React instance. Under `strictVersion: false` a mismatch was only a console
+  warning, after which MF silently hoisted the highest React into code compiled
+  against the other version, so failures surfaced later looking unrelated;
+  `strictVersion: true` throws at share resolution instead. **Enforcement is
+  asymmetric (verified by experiment 2026-08-17):** the shell's own share
+  resolution throws and the page dies, but a _remote_ whose `requiredVersion`
+  does not match gets its throw caught by `@module-federation/vite`, which logs
+  `Failed to bridge external shared module` and mounts anyway. A successful
+  render therefore does not prove the contract holds — the console is the signal.
+  Any new remote must be on React 19. Do not drop the singleton config, and
+  coordinate with the remote.
 - **Do not reintroduce a `build.target` pin.** Vite 8's default baseline already
   supports the top-level `await` Module Federation needs, so pinning `chrome89`
   only lowers the baseline; the old "MF needs a modern target" justification was

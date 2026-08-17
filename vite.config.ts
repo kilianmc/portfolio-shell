@@ -40,13 +40,13 @@ export default defineConfig(({ mode }) => {
           shared: {
             react: {
               singleton: true,
-              requiredVersion: '^18.2.0 || ^19.0.0',
-              strictVersion: false,
+              requiredVersion: '^19.0.0',
+              strictVersion: true,
             },
             'react-dom': {
               singleton: true,
-              requiredVersion: '^18.2.0 || ^19.0.0',
-              strictVersion: false,
+              requiredVersion: '^19.0.0',
+              strictVersion: true,
             },
           },
         }),
