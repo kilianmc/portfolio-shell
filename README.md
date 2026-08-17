@@ -13,9 +13,10 @@ project as an independently deployed **Module Federation remote** at runtime.
 
 ## Showcase remotes
 
-| Project                  | Remote          | Repo                                                         | Live                                     |
-| ------------------------ | --------------- | ------------------------------------------------------------ | ---------------------------------------- |
-| Fund Portfolio Dashboard | `fundDashboard` | [fund-dashboard](https://github.com/kilianmc/fund-dashboard) | https://ai-portfolio-project1.vercel.app |
+| Project                   | Remote          | Repo                                                         | Live                                     |
+| ------------------------- | --------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| Fund Portfolio Dashboard  | `fundDashboard` | [fund-dashboard](https://github.com/kilianmc/fund-dashboard) | https://ai-portfolio-project1.vercel.app |
+| Climbing Training Planner | `climbTrainer`  | [climb-trainer](https://github.com/kilianmc/climb-trainer)   | https://climb.kilianmc.com               |
 
 ## Tech
 

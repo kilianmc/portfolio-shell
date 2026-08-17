@@ -18,6 +18,21 @@ describe('projects data', () => {
     expect(typeof fund!.load).toBe('function');
   });
 
+  it('contains the climb-trainer remote entry', () => {
+    const climb = projects.find((p) => p.id === 'climb-trainer') as
+      RemoteProject | undefined;
+    expect(climb).toBeDefined();
+    expect(climb!.kind).toBe('remote');
+    // Title/tech are editorial copy — assert presence, not exact wording. The
+    // standalone URL is the contract: the remote's own federated links point at
+    // that origin, and it is the ErrorBoundary's fallback.
+    expect(climb!.title.length).toBeGreaterThan(0);
+    expect(climb!.liveUrl).toBe('https://climb.kilianmc.com');
+    expect(climb!.repoUrl).toBe('https://github.com/kilianmc/climb-trainer');
+    expect(climb!.tech.length).toBeGreaterThan(0);
+    expect(typeof climb!.load).toBe('function');
+  });
+
   it('contains the photography-portfolio embedded (iframe) entry', () => {
     const photo = projects.find((p) => p.id === 'photography-portfolio') as
       EmbeddedProject | undefined;
