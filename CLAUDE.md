@@ -12,9 +12,12 @@ independently built and deployed app — into the shell at runtime.
 The shell composes projects via **two integration patterns**:
 
 - **Module Federation** — shared-runtime React remotes, mounted on demand inside
-  `ProjectViewer` via `React.lazy`. Today it consumes one remote, the
-  **`fundDashboard`** remote (the
-  [`fund-dashboard`](https://github.com/kilianmc/fund-dashboard) repo).
+  `ProjectViewer` via `React.lazy`. Today it consumes two: the **`fundDashboard`**
+  remote (the [`fund-dashboard`](https://github.com/kilianmc/fund-dashboard) repo)
+  and the **`climbTrainer`** remote (the
+  [`climb-trainer`](https://github.com/kilianmc/climb-trainer) repo — React 19 +
+  TypeScript on a FastAPI/Neon Postgres backend, standalone at
+  `climb.kilianmc.com`).
 - **iframe integration** — the framework-agnostic microfrontend pattern: a fully
   independent, fully isolated app of _any_ stack, composed into the shell inside
   an `<iframe>`. Today this is the **photography-portfolio** — an Astro static
@@ -59,13 +62,13 @@ vite.config.ts        # MF host config (remotes, shared singletons, build target
 tsconfig.json         # strict TS config for the app + vite config
 tsconfig.node.json    # TS config for the Node-side vite config
 vercel.json           # SPA rewrite (all routes -> /index.html)
-.env.example          # VITE_FUND_REMOTE_URL documentation
+.env.example          # per-remote VITE_*_REMOTE_URL documentation
 src/
   main.tsx            # ReactDOM root, imports index.scss
   App.tsx             # layout, section nav, opens/closes ProjectViewer
   index.scss          # global styling entry
   types/
-    remotes.d.ts      # ambient decl for the `fundDashboard/App` remote module
+    remotes.d.ts      # ambient decls for the `<remote>/App` modules
   styles/             # shared SCSS partials (_variables, _mixins)
   components/
     Sidebar.tsx       # left nav / section links
@@ -106,10 +109,11 @@ Only `remote` projects get a `React.lazy` entry in `lazyProjectComponents`;
 The shell is a **host**. For federated (`kind: 'remote'`) projects, its job is to
 load remotes reliably. Treat the following as a contract:
 
-- **Remotes are configured in `vite.config.ts`.** The `fundDashboard` remote's
-  entry URL comes from **`VITE_FUND_REMOTE_URL`** (set per-environment in
-  Vercel), defaulting to the production deployment so the app works out of the
-  box. Do not hardcode a different URL or remove the env fallback.
+- **Remotes are configured in `vite.config.ts`.** Each entry URL comes from its
+  own env var (set per-environment in Vercel) — **`VITE_FUND_REMOTE_URL`** and
+  **`VITE_CLIMB_REMOTE_URL`** — defaulting to the production deployment so the app
+  works out of the box. Do not hardcode a different URL or remove the env
+  fallback.
 - **React and React-DOM are shared as singletons** (`singleton: true`,
   `requiredVersion: '^19.0.0'`, `strictVersion: true`). Host and remote must run
   one React instance; any new remote must be on React 19. Do not drop the
@@ -121,13 +125,16 @@ load remotes reliably. Treat the following as a contract:
   shared-module cache**, throws on a range it cannot satisfy, and that throw
   rejects the entry wrapper so the real app entry is never imported — the page is
   blank. Any container initialising **after** the cache is seeded only logs
-  `Failed to bridge external shared module`, once per shared key (**four
-  `console.error` lines**), and mounts anyway. The shell boots first in this
-  topology, so a range this repo's own installed React cannot satisfy takes
-  kilianmc.com down, whereas the same mistake in the fund only logs when
-  federated — while still blanking the fund's own standalone deployment. In a
-  **production build** those four lines appear at **initial page load** during
-  eager remote init, not when the user opens the dashboard. Under
+  `Failed to bridge external shared module` — at least once per shared key — and
+  mounts anyway. **Grep for that string; do not assert a line count.** A forced
+  `^18.0.0` mismatch on `climbTrainer` (2026-08-17) produced **six** such lines,
+  not four: one per shared key plus two wrapped in a `#RUNTIME-015`
+  container-initialization error. The shell boots first in this topology, so a range this
+  repo's own installed React cannot satisfy takes kilianmc.com down, whereas the
+  same mistake in a remote only logs when federated — while still blanking that
+  remote's own standalone deployment. In a **production build** those lines appear
+  at **initial page load** during eager remote init, not when the user opens the
+  project. Under
   **`npm run dev`** they do not: since `@module-federation/vite` 1.20.7 the dev
   server materializes a share only once something imports it (`materialize: false`
   on the rest, which the eager host-init loop skips), moving the strict check from
@@ -156,16 +163,29 @@ load remotes reliably. Treat the following as a contract:
 - **Keep `resolve.dedupe: ['react', 'react-dom']`.** `@vitejs/plugin-react` 6 no
   longer adds it, and duplicate React under federation is the failure it
   prevents.
-- **Lazy-load remotes.** Remote components are imported via `import('fundDashboard/App')`
-  in `src/data/projects.ts`, wrapped in `React.lazy`, and rendered inside a
-  `<Suspense>` + `<ErrorBoundary>` in `ProjectViewer`. Preserve this so the
-  initial load never pays for remote code and a failed remote never unmounts
-  the portfolio. The `fundDashboard/App` module is typed via
-  `src/types/remotes.d.ts` (the remote ships no federated types — `dts: false`).
-- **Remote-contract changes must be coordinated with the `fund-dashboard` repo.**
-  The remote name (`fundDashboard`), the exposed module path (`fundDashboard/App`),
-  and shared-dependency versions are a two-sided agreement. Changing either side
-  alone will break loading.
+- **Lazy-load remotes.** Remote components are imported via
+  `import('<remote>/App')` in `src/data/projects.ts`, wrapped in `React.lazy`, and
+  rendered inside a `<Suspense>` + `<ErrorBoundary>` in `ProjectViewer`. Preserve
+  this so the initial load never pays for remote code and a failed remote never
+  unmounts the portfolio. Both exposed modules are typed via
+  `src/types/remotes.d.ts` (neither remote ships federated types — `dts: false`).
+- **Remote-contract changes must be coordinated with the remote's repo.** The
+  remote name (`fundDashboard`, `climbTrainer`), the exposed module path
+  (`<name>/App`), and shared-dependency versions are a two-sided agreement.
+  Changing either side alone will break loading.
+- **A remote may share more keys than the host does.** `climbTrainer` also shares
+  scoped `'react/'` / `'react-dom/'` (so `react/jsx-runtime` and
+  `react-dom/client` resolve from the one instance); the host and `fundDashboard`
+  share only `react`/`react-dom`, and adding the scoped keys here is not required —
+  the host seeds `react`/`react-dom` first and the remotes rebind to that.
+  Verified cross-origin against a locally built
+  `climbTrainer` on 2026-08-17 (dev server and production build): zero bridge
+  failures, one React instance. Still owed against the deployed remote once
+  `climb-trainer` promotes to production.
+- **`climbTrainer` scopes all of its CSS under `.ct-app` and renders absolute
+  `https://climb.kilianmc.com/…` hrefs** in the federated mount, so nothing leaks
+  into the shell's styles and a cmd-click leaves for the standalone app instead of
+  404-ing on kilianmc.com. Both are that repo's contract, asserted by its tests.
 
 ## Coding conventions
 
@@ -200,13 +220,19 @@ npm run test:run     # Vitest once (what CI runs) — must pass before PR
 **Testing:** Vitest + React Testing Library (jsdom), config in the `test` block
 of `vite.config.ts` with `src/test/setup.ts` (jest-dom matchers + a `matchMedia`
 stub). Tests live next to source as `*.test.{ts,tsx}`. The Module Federation
-plugin is skipped under Vitest (`process.env.VITEST`) so jsdom can run, and the
-`fundDashboard/App` remote specifier is aliased to a local stub
+plugin is skipped under Vitest (`process.env.VITEST`) so jsdom can run, and every
+`<remote>/App` specifier is aliased to a local stub
 (`src/test/remoteAppStub.tsx`); the remote-failure path overrides that with a
 throwing `vi.mock('fundDashboard/App', …)`. Dev/build keep federation active.
+**A new remote needs its alias added there too**, or Vite's import analysis fails
+on the bare specifier under test.
 
 To develop against a locally running remote, create `.env` from `.env.example`
-and set `VITE_FUND_REMOTE_URL=http://localhost:5001/remoteEntry.js`.
+and point that remote's URL at it, e.g.
+`VITE_FUND_REMOTE_URL=http://localhost:5001/remoteEntry.js`. A cross-origin local
+run needs `Access-Control-Allow-Origin` on the remote's `/remoteEntry.js` **and**
+`/assets/*` — `remoteEntry.js` statically imports a chunk from `/assets/`, so
+without it the first `import()` rejects.
 
 Lint, typecheck, format, tests, and build are enforced in CI
 (`.github/workflows/ci.yml`, job `lint-build`: `npm ci` → `npm run lint` →
@@ -226,17 +252,30 @@ checklist.
 - **Vercel deploys.** The **`dev`** branch auto-deploys to a stable **dev URL**;
   **`main`** deploys to **production (kilianmc.com)**. Feature branches get
   ephemeral preview deploys.
-- **Per-environment remote URL.** The host loads the `fundDashboard` remote from
-  **`VITE_FUND_REMOTE_URL`** (read in `vite.config.js`, prod default preserved).
-  Set it per Vercel scope so the dev shell loads the dev remote and prod loads
-  prod:
-  - **Production** scope →
-    `https://ai-portfolio-project1.vercel.app/remoteEntry.js`
-  - **Preview** scope (covers the `dev` branch and all non-prod deploys) →
+- **Per-environment remote URLs.** The host reads each remote's entry from its own
+  env var in `vite.config.ts` (prod default preserved). Set them per Vercel scope
+  so the dev shell loads the dev remote and prod loads prod:
+  - **`VITE_FUND_REMOTE_URL`** — Production →
+    `https://ai-portfolio-project1.vercel.app/remoteEntry.js`; Preview (the `dev`
+    branch and all non-prod deploys) →
     `https://ai-portfolio-project1-git-dev-kilians-projects-7425dee2.vercel.app/remoteEntry.js`
     (confirmed 2026-07-20; slug uses the team scope). Vercel Deployment
     Protection must stay **off** for previews or the dev remote is SSO-gated —
     see `docs/DEPLOYMENT.md`.
+  - **`VITE_CLIMB_REMOTE_URL`** — `https://climb.kilianmc.com/remoteEntry.js` in
+    **both** scopes. `climb-trainer` keeps Deployment Protection **on** for its
+    previews on purpose, so its branch alias answers `302 → vercel.com/sso-api`
+    and is unusable cross-origin; the dev shell consumes the production climb
+    remote until that changes. Until that repo's first production promotion the URL
+    answers `200 text/html` (its SPA rewrite) and the card falls back to the
+    `ErrorBoundary`.
+- ⚠️ **Do NOT promote 3.3.0+ to `main` before `climb-trainer`'s first production
+  promotion.** A production build initialises remotes eagerly, so while
+  `climb.kilianmc.com/remoteEntry.js` answers `200 text/html` the page logs two
+  errors on every load (MIME-type refusal + `#RUNTIME-008 Failed to load script
+resources`). The portfolio still renders and the climb card shows its
+  `ErrorBoundary`, so this is cosmetic — but it is cosmetic _on kilianmc.com_.
+  Verified 2026-08-17; the dev deploy carries it deliberately in the meantime.
 - **Promotion / approval.** Kilian manually tests the **dev URL**, then merges
   the `dev`→`main` promotion PR to ship. Kilian holds the merge gate.
 - **Versioning.** Baseline production = **1.0.0**. Dev iterations bump the

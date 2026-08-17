@@ -5,14 +5,16 @@ import react from '@vitejs/plugin-react';
 import { federation } from '@module-federation/vite';
 
 // The portfolio shell is a Module Federation *host*. It loads each showcase
-// project as a remote at runtime. The fund dashboard remote URL is
-// configurable via VITE_FUND_REMOTE_URL (set per-environment in Vercel);
-// it defaults to the production deployment so the shell works out of the box.
+// project as a remote at runtime. Each remote's entry URL is configurable via
+// its own VITE_*_REMOTE_URL (set per-environment in Vercel); each defaults to
+// the production deployment so the shell works out of the box.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const FUND_REMOTE =
     env.VITE_FUND_REMOTE_URL ||
     'https://ai-portfolio-project1.vercel.app/remoteEntry.js';
+  const CLIMB_REMOTE =
+    env.VITE_CLIMB_REMOTE_URL || 'https://climb.kilianmc.com/remoteEntry.js';
 
   // The Module Federation plugin rewrites the module graph in ways that break
   // jsdom test runs. Skip it under Vitest (dev/build keep federation intact);
@@ -25,8 +27,9 @@ export default defineConfig(({ mode }) => {
       !isTest &&
         federation({
           name: 'shell',
-          // The `fundDashboard` remote is a plain-JS project — skip federated
-          // type generation. The exposed module is typed locally instead via
+          // Neither remote ships federated types (`dts: false` on both sides):
+          // `fundDashboard` is a plain-JS project and `climbTrainer` disables
+          // generation. Both exposed modules are typed locally instead via
           // src/types/remotes.d.ts.
           dts: false,
           remotes: {
@@ -34,6 +37,11 @@ export default defineConfig(({ mode }) => {
               type: 'module',
               name: 'fundDashboard',
               entry: FUND_REMOTE,
+            },
+            climbTrainer: {
+              type: 'module',
+              name: 'climbTrainer',
+              entry: CLIMB_REMOTE,
             },
           },
           // React is shared as a singleton so host + remote use one instance.
@@ -52,16 +60,19 @@ export default defineConfig(({ mode }) => {
         }),
     ].filter(Boolean),
     // `dedupe` keeps host and remote on one React copy under federation.
-    // Under tests the federation plugin is absent, so the bare
-    // `fundDashboard/App` specifier has nothing to resolve to and Vite's import
-    // analysis errors; alias it to a local stub, which the failure-path test
-    // overrides with a throwing vi.mock to simulate an unreachable remote.
+    // Under tests the federation plugin is absent, so the bare remote
+    // specifiers have nothing to resolve to and Vite's import analysis errors;
+    // alias each to a local stub, which the failure-path test overrides with a
+    // throwing vi.mock to simulate an unreachable remote.
     resolve: {
       dedupe: ['react', 'react-dom'],
       ...(isTest
         ? {
             alias: {
               'fundDashboard/App': fileURLToPath(
+                new URL('./src/test/remoteAppStub.tsx', import.meta.url),
+              ),
+              'climbTrainer/App': fileURLToPath(
                 new URL('./src/test/remoteAppStub.tsx', import.meta.url),
               ),
             },

@@ -42,7 +42,7 @@ describe('ProjectViewer (remote resolves)', () => {
     render(<ProjectViewer projectId="fund-dashboard" onClose={() => {}} />);
 
     const remote = await screen.findByTestId('remote-app');
-    expect(remote).toHaveTextContent('Fund dashboard remote');
+    expect(remote).toHaveTextContent('Federated remote');
     // Loading state is gone once the remote mounts.
     expect(
       screen.queryByText('Fetching remoteEntry.js and shared chunks'),
