@@ -58,7 +58,7 @@ agents that open focused PRs. Keep changes small and reviewable.
 
 ```
 index.html            # entry HTML; loads /src/main.tsx, Google Fonts
-vite.config.ts        # MF host config (remotes, shared singletons, build target)
+vite.config.ts        # MF host config (remotes, shared singletons, dedupe)
 tsconfig.json         # strict TS config for the app + vite config
 tsconfig.node.json    # TS config for the Node-side vite config
 vercel.json           # SPA rewrite (all routes -> /index.html)
@@ -126,10 +126,12 @@ load remotes reliably. Treat the following as a contract:
   rejects the entry wrapper so the real app entry is never imported — the page is
   blank. Any container initialising **after** the cache is seeded only logs
   `Failed to bridge external shared module` — at least once per shared key — and
-  mounts anyway. **Grep for that string; do not assert a line count.** A forced
-  `^18.0.0` mismatch on `climbTrainer` (2026-08-17) produced **six** such lines,
-  not four: one per shared key plus two wrapped in a `#RUNTIME-015`
-  container-initialization error. The shell boots first in this topology, so a range this
+  mounts anyway. A forced `^18.0.0` mismatch on `climbTrainer` (re-measured
+  2026-08-17) logs **four** such lines against a production build, **one per shared
+  key**, all at initial load. **Still grep for that string rather than asserting a
+  count**: the same control against the dev server split into two at load (wrapped in
+  a `#RUNTIME-015` container-init error) plus four at first card open, per the dev-mode
+  behaviour described below. The shell boots first in this topology, so a range this
   repo's own installed React cannot satisfy takes kilianmc.com down, whereas the
   same mistake in a remote only logs when federated — while still blanking that
   remote's own standalone deployment. In a **production build** those lines appear
@@ -173,15 +175,27 @@ load remotes reliably. Treat the following as a contract:
   remote name (`fundDashboard`, `climbTrainer`), the exposed module path
   (`<name>/App`), and shared-dependency versions are a two-sided agreement.
   Changing either side alone will break loading.
-- **A remote may share more keys than the host does.** `climbTrainer` also shares
-  scoped `'react/'` / `'react-dom/'` (so `react/jsx-runtime` and
-  `react-dom/client` resolve from the one instance); the host and `fundDashboard`
-  share only `react`/`react-dom`, and adding the scoped keys here is not required —
-  the host seeds `react`/`react-dom` first and the remotes rebind to that.
-  Verified cross-origin against a locally built
-  `climbTrainer` on 2026-08-17 (dev server and production build): zero bridge
-  failures, one React instance. Still owed against the deployed remote once
-  `climb-trainer` promotes to production.
+- **The `shared` block lists two keys; all three containers register four.** The
+  plugin expands a shared package to the subpaths the module graph imports, so this
+  host's `react`/`react-dom` become **`react`, `react/jsx-runtime`, `react-dom`,
+  `react-dom/client`** — every one `singleton` + `^19.0.0` + `strictVersion: true`,
+  and so do `fundDashboard` (which declares two, like this host) and `climbTrainer`
+  (which declares the scoped pair explicitly). Measured 2026-08-17 in the built
+  `localSharedImportMap` and in
+  `__FEDERATION__.__INSTANCES__[*].shareScopeMap.default`: same four keys in all
+  three, each provided `from: 'shell'`. **Whether the explicit scoped pair is
+  load-bearing is untested here** — `climb-trainer`'s config says it is, on an older
+  plugin version — so do not add or remove those declarations on the strength of this
+  bullet. What this bullet is for: `react/jsx-runtime` and `react-dom/client` **are**
+  shared, so the "a package the shell does not share gets a second React" warning
+  above does not apply to them.
+- **Cross-origin verification is only ever the console.** Against a locally built
+  `climbTrainer` (2026-08-17, dev server and production build): zero bridge failures,
+  zero page errors, no rules outside `.ct-app`. Deliberately **no React-instance
+  count** here — counting `__reactFiber$` suffixes reads `1` in the broken arm too
+  (the remote never creates a renderer), and the share-provider dump and the remote's
+  own React chunk requests were also measured identical in both arms. Still owed
+  against the deployed remote once `climb-trainer` promotes to production.
 - **`climbTrainer` scopes all of its CSS under `.ct-app` and renders absolute
   `https://climb.kilianmc.com/…` hrefs** in the federated mount, so nothing leaks
   into the shell's styles and a cmd-click leaves for the standalone app instead of
@@ -270,12 +284,22 @@ checklist.
     answers `200 text/html` (its SPA rewrite) and the card falls back to the
     `ErrorBoundary`.
 - ⚠️ **Do NOT promote 3.3.0+ to `main` before `climb-trainer`'s first production
-  promotion.** A production build initialises remotes eagerly, so while
-  `climb.kilianmc.com/remoteEntry.js` answers `200 text/html` the page logs two
-  errors on every load (MIME-type refusal + `#RUNTIME-008 Failed to load script
-resources`). The portfolio still renders and the climb card shows its
-  `ErrorBoundary`, so this is cosmetic — but it is cosmetic _on kilianmc.com_.
-  Verified 2026-08-17; the dev deploy carries it deliberately in the meantime.
+  promotion.** A production build preloads every remote entry at page load, so while
+  `climb.kilianmc.com/remoteEntry.js` answers `200 text/html` the page logs **one**
+  error on load (the browser refusing the module for its MIME type) and then
+  **`#RUNTIME-008 Failed to load script resources` once per card open** — `1 + N`, not
+  a fixed 2. The portfolio still renders, the fund remote still mounts, and the climb
+  card shows its `ErrorBoundary`, so this is cosmetic — but it is cosmetic _on
+  kilianmc.com_. Measured 2026-08-17; the dev deploy carries it deliberately meanwhile.
+- ⚠️ **"The portfolio survives a broken remote" holds only for remotes that fail
+  FAST.** A remote entry that **hangs** leaves kilianmc.com **completely blank** —
+  `#root` empty, still blank at 15 s — because eager remote init gates first paint on
+  every entry resolving; a slow one delays first paint by however long it takes. This
+  is **pre-existing and architectural, not introduced by any one remote**: measured
+  2026-08-17 with the climb entry hanging and again with the _fund_ entry hanging, both
+  identical. What each new remote does add is one more third-party origin that can do
+  it. No timeout is being added here — if that becomes a priority it is its own change
+  (a bounded `loadRemote` timeout, or moving remote init off the critical path).
 - **Promotion / approval.** Kilian manually tests the **dev URL**, then merges
   the `dev`→`main` promotion PR to ship. Kilian holds the merge gate.
 - **Versioning.** Baseline production = **1.0.0**. Dev iterations bump the
