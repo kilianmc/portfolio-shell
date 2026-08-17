@@ -19,7 +19,7 @@ project as an independently deployed **Module Federation remote** at runtime.
 
 ## Tech
 
-React 18 · **TypeScript (strict)** · Vite 8 · `@module-federation/vite` · SCSS ·
+React 19 · **TypeScript (strict)** · Vite 8 · `@module-federation/vite` · SCSS ·
 Vitest + React Testing Library · Vercel Web Analytics. Deployed on Vercel.
 
 > **Typed host, JS remote — on purpose.** This shell is the deliberately
