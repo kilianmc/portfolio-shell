@@ -125,10 +125,16 @@ load remotes reliably. Treat the following as a contract:
   `console.error` lines**), and mounts anyway. The shell boots first in this
   topology, so a range this repo's own installed React cannot satisfy takes
   kilianmc.com down, whereas the same mistake in the fund only logs when
-  federated — while still blanking the fund's own standalone deployment. Those
-  four lines appear at **initial page load** during eager remote init, not when
-  the user opens the dashboard. A clean render proves nothing; the console is the
-  gate. Under `strictVersion: false` even the fatal case was only a warning,
+  federated — while still blanking the fund's own standalone deployment. In a
+  **production build** those four lines appear at **initial page load** during
+  eager remote init, not when the user opens the dashboard. Under
+  **`npm run dev`** they do not: since `@module-federation/vite` 1.20.7 the dev
+  server materializes a share only once something imports it (`materialize: false`
+  on the rest, which the eager host-init loop skips), moving the strict check from
+  bootstrap to **first import** — so a violation throws mid-render instead of
+  blanking the page at load. Which shares start materialized depends on what the
+  module graph has already pulled in. A clean render proves nothing in either
+  mode; the console is the gate. Under `strictVersion: false` even the fatal case was only a warning,
   after which MF silently hoisted the highest React into code compiled against
   the other version.
 - **A caught bridge failure is not harmless.** It lands on one React today only
