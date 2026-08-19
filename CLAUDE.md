@@ -280,17 +280,16 @@ checklist.
     **both** scopes. `climb-trainer` keeps Deployment Protection **on** for its
     previews on purpose, so its branch alias answers `302 → vercel.com/sso-api`
     and is unusable cross-origin; the dev shell consumes the production climb
-    remote until that changes. Until that repo's first production promotion the URL
-    answers `200 text/html` (its SPA rewrite) and the card falls back to the
-    `ErrorBoundary`.
-- ⚠️ **Do NOT promote 3.3.0+ to `main` before `climb-trainer`'s first production
-  promotion.** A production build preloads every remote entry at page load, so while
-  `climb.kilianmc.com/remoteEntry.js` answers `200 text/html` the page logs **one**
-  error on load (the browser refusing the module for its MIME type) and then
-  **`#RUNTIME-008 Failed to load script resources` once per card open** — `1 + N`, not
-  a fixed 2. The portfolio still renders, the fund remote still mounts, and the climb
-  card shows its `ErrorBoundary`, so this is cosmetic — but it is cosmetic _on
-  kilianmc.com_. Measured 2026-08-17; the dev deploy carries it deliberately meanwhile.
+    remote until that changes. Since that repo's v2.0.0 promotion (2026-08-18) the URL
+    answers `200 application/javascript` with `access-control-allow-origin: *`.
+- ⚠️ **Promote a new remote to production BEFORE the host that consumes it** — the
+  general rule, and the reason 3.3.0 waited for `climb-trainer` v2.0.0 (cleared
+  2026-08-18). A production build preloads every remote entry at page load, so a remote
+  whose `main` is still pre-app serves its SPA rewrite and the page logs **one** error on
+  load (the browser refusing the module for its MIME type), plus
+  `#RUNTIME-008 Failed to load script resources` **once per card open** — `1 + N`, not a
+  fixed 2. Measured 2026-08-17 against `200 text/html`. The portfolio still renders and
+  the card shows its `ErrorBoundary`, so it is cosmetic — but cosmetic _on kilianmc.com_.
 - ⚠️ **"The portfolio survives a broken remote" holds only for remotes that fail
   FAST.** A remote entry that **hangs** leaves kilianmc.com **completely blank** —
   `#root` empty, still blank at 15 s — because eager remote init gates first paint on
