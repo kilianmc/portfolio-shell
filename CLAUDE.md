@@ -194,8 +194,14 @@ load remotes reliably. Treat the following as a contract:
   zero page errors, no rules outside `.ct-app`. Deliberately **no React-instance
   count** here — counting `__reactFiber$` suffixes reads `1` in the broken arm too
   (the remote never creates a renderer), and the share-provider dump and the remote's
-  own React chunk requests were also measured identical in both arms. Still owed
-  against the deployed remote once `climb-trainer` promotes to production.
+  own React chunk requests were also measured identical in both arms. **Confirmed
+  against the real deployment 2026-08-19** (shell v4.0.0 + `climb-trainer` v2.0.0):
+  kilianmc.com's console clean **from initial page load** — the arm that matters,
+  since a production build logs bridge failures during eager remote init, not on
+  card open — and clean again on opening the climb card. Production's share map was
+  separately read over the wire: `requiredVersion: ^19.0.0`, `singleton: !0`,
+  `strictVersion: !0`, four keys each. Note the minified output uses **backticks**,
+  so grep `requiredVersion:.` or the search silently returns nothing.
 - **`climbTrainer` scopes all of its CSS under `.ct-app` and renders absolute
   `https://climb.kilianmc.com/…` hrefs** in the federated mount, so nothing leaks
   into the shell's styles and a cmd-click leaves for the standalone app instead of
