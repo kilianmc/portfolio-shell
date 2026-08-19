@@ -25,8 +25,10 @@ Closes #
 
 - [ ] `npm run build` passes locally.
 - [ ] Lint/tests pass (or N/A — tooling not yet present; see issues #2/#3).
-- [ ] Module Federation host contract is unaffected — remote still loads
-      (`VITE_FUND_REMOTE_URL`, React shared singleton, `chrome89` build target).
-- [ ] Any remote-contract change is coordinated with the `fund-dashboard` repo.
+- [ ] Module Federation host contract is unaffected — every remote still loads
+      (`VITE_FUND_REMOTE_URL`, `VITE_CLIMB_REMOTE_URL`, React shared singletons at
+      `^19.0.0` with `strictVersion: true`) and the console is clean.
+- [ ] Any remote-contract change is coordinated with that remote's repo
+      (`fund-dashboard`, `climb-trainer`).
 - [ ] Docs updated (`CLAUDE.md` / `README.md`) if behavior or conventions changed.
 - [ ] Diff is focused and scoped to this issue.

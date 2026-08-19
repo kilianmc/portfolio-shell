@@ -46,7 +46,8 @@ export interface PlaceholderProject extends BaseProject {
 
 export type Project = RemoteProject | EmbeddedProject | PlaceholderProject;
 
-// The real, production-visible projects — one of each integration pattern.
+// The real, production-visible projects: two Module Federation remotes and one
+// iframe integration.
 const realProjects: (RemoteProject | EmbeddedProject)[] = [
   {
     id: 'fund-dashboard',
@@ -77,6 +78,21 @@ const realProjects: (RemoteProject | EmbeddedProject)[] = [
     liveUrl: 'https://artlaia.pages.dev',
     repoUrl: 'https://github.com/kilianmc/photography-portfolio',
   },
+  {
+    id: 'climb-trainer',
+    kind: 'remote',
+    number: '03',
+    title: 'Climbing Training Planner',
+    tagline:
+      'A climbing training app on a Python backend and a real database, loaded here as a microfrontend.',
+    description:
+      'Pick a target grade and it plans your training across the aspects of climbing, guides each session with a timer and audio cues while you log as you go, and keeps the history in a training diary. This is the first project in the portfolio with a database and a non-JS backend: a FastAPI service (Python 3.13, SQLAlchemy, Alembic) on Neon Postgres, serving a React 19 + TanStack Router frontend from the same origin. It runs standalone at climb.kilianmc.com and is exposed as a Module Federation remote.',
+    tech: ['React', 'TypeScript', 'FastAPI', 'Neon Postgres', 'TanStack'],
+    liveUrl: 'https://climb.kilianmc.com',
+    repoUrl: 'https://github.com/kilianmc/climb-trainer',
+    // Federated import — resolved by @module-federation/vite at runtime.
+    load: () => import('climbTrainer/App'),
+  },
 ];
 
 // HTML-only example cards for previewing layout/hover with a fuller grid.
@@ -86,7 +102,7 @@ const exampleProjects: PlaceholderProject[] = [
   {
     id: 'example-chat',
     kind: 'placeholder',
-    number: '03',
+    number: '04',
     title: 'Realtime Chat',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:
@@ -96,7 +112,7 @@ const exampleProjects: PlaceholderProject[] = [
   {
     id: 'example-notes',
     kind: 'placeholder',
-    number: '04',
+    number: '05',
     title: 'Markdown Notes',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:
@@ -106,7 +122,7 @@ const exampleProjects: PlaceholderProject[] = [
   {
     id: 'example-weather',
     kind: 'placeholder',
-    number: '05',
+    number: '06',
     title: 'Weather Widget',
     tagline: 'Example card — not a real project (layout/hover preview only).',
     description:

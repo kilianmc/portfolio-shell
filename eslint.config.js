@@ -6,7 +6,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-config-prettier';
 
-// Flat ESLint config for this React 18 + Vite TypeScript project.
+// Flat ESLint config for this React 19 + Vite TypeScript project.
 // Order matters: `eslint-config-prettier` is last so it disables any stylistic
 // rules that would conflict with Prettier's formatting.
 export default tseslint.config(
