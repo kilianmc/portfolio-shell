@@ -79,8 +79,10 @@ export default defineConfig(({ mode }) => {
           }
         : {}),
     },
-    // Ensure the automatic JSX runtime is used when compiling .tsx test files.
-    esbuild: { jsx: 'automatic' },
+    // No JSX transform config here on purpose: `@vitejs/plugin-react` already
+    // sets `oxc: { jsx: { runtime: 'automatic' } }`, and Vite 8 transforms via
+    // oxc, not esbuild. The old `esbuild: { jsx: 'automatic' }` was silently
+    // ignored — Vite 8 reads only `esbuild.jsxInject`.
     // Use Dart Sass's modern compiler (avoids the legacy JS API deprecation
     // warning). Vite 8 makes the modern compiler the default and dropped the
     // explicit `api: 'modern-compiler'` option from its Sass types, so it is
